@@ -26,27 +26,27 @@ namespace Game
   public:
     Rule();
 
-    void SetNbCases(int nbCases);
-    int GetNbCases();
+    void setNbCases(int nbCases);
+    int getNbCases();
 
-    void SetNbBlueSeeds(int nbBlueSeeds);
-    int GetNbBlueSeeds();
-    void SetNbRedSeeds(int nbRedSeeds);
-    int GetNbRedSeeds();
-    void SetNbTransparentSeeds(int nbTransparentSeeds);
-    int GetNbTransparentSeeds();
+    void setNbBlueSeeds(int nbBlueSeeds);
+    int getNbBlueSeeds();
+    void setNbRedSeeds(int nbRedSeeds);
+    int getNbRedSeeds();
+    void setNbTransparentSeeds(int nbTransparentSeeds);
+    int getNbTransparentSeeds();
 
-    void SetWinCondition(int winCondition);
-    int GetWinCondition();
-    void SetDrawCondition(int drawCondition);
-    int GetDrawCondition();
-    void SetEndCondition(int endCondition);
-    int GetEndCondition();
-    void SetStarving(bool starving);
-    bool GetStarving();
+    void setWinCondition(int winCondition);
+    int getWinCondition();
+    void setDrawCondition(int drawCondition);
+    int getDrawCondition();
+    void setEndCondition(int endCondition);
+    int getEndCondition();
+    void setStarving(bool starving);
+    bool getStarving();
 
-    void SetEatWhenNbSeeds(vector<int> eatWhenNbSeeds);
-    vector<int> GetEatWhenNbSeeds();
+    void setEatWhenNbSeeds(vector<int> eatWhenNbSeeds);
+    vector<int> getEatWhenNbSeeds();
   };
 }
 

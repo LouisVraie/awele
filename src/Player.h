@@ -14,6 +14,9 @@ namespace Game
 
   public:
     Player();
+
+    void setScore(int score);
+    int getScore();
   };
 }
 

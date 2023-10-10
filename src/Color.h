@@ -5,13 +5,10 @@ using namespace std;
 
 namespace Game
 {
-  class Color
-  {
-  private:
-    
-
-  public:
-    Color();
+  enum Color {
+    Blue = 1,
+    Red = 2,
+    Transparent = 3
   };
 }
 

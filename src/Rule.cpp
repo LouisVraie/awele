@@ -10,85 +10,85 @@ Rule::Rule()
 
 }
 
-void Rule::SetNbCases(int nbCases)
+void Rule::setNbCases(int nbCases)
 {
   this->nbCases = nbCases;
 }
 
-int Rule::GetNbCases()
+int Rule::getNbCases()
 {
   return this->nbCases;
 }
 
-void Rule::SetNbBlueSeeds(int nbBlueSeeds)
+void Rule::setNbBlueSeeds(int nbBlueSeeds)
 {
   this->nbBlueSeeds = nbBlueSeeds;
 }
-int Rule::GetNbBlueSeeds()
+int Rule::getNbBlueSeeds()
 {
   return this->nbBlueSeeds;
 }
 
-void Rule::SetNbRedSeeds(int nbRedSeeds)
+void Rule::setNbRedSeeds(int nbRedSeeds)
 {
   this->nbRedSeeds = nbRedSeeds;
 }
-int Rule::GetNbRedSeeds()
+int Rule::getNbRedSeeds()
 {
   return this->nbRedSeeds;
 }
 
-void Rule::SetNbTransparentSeeds(int nbTransparentSeeds)
+void Rule::setNbTransparentSeeds(int nbTransparentSeeds)
 {
   this->nbTransparentSeeds = nbTransparentSeeds;
 }
-int Rule::GetNbTransparentSeeds()
+int Rule::getNbTransparentSeeds()
 {
   return this->nbTransparentSeeds;
 }
 
-void Rule::SetWinCondition(int winCondition)
+void Rule::setWinCondition(int winCondition)
 {
   this->winCondition = winCondition;
 }
-int Rule::GetWinCondition()
+int Rule::getWinCondition()
 {
   return this->winCondition;
 }
 
-void Rule::SetDrawCondition(int drawCondition)
+void Rule::setDrawCondition(int drawCondition)
 {
   this->drawCondition = drawCondition;
 }
-int Rule::GetDrawCondition()
+int Rule::getDrawCondition()
 {
   return this->drawCondition;
 }
 
-void Rule::SetEndCondition(int endCondition)
+void Rule::setEndCondition(int endCondition)
 {
   this->endCondition = endCondition;
 }
-int Rule::GetEndCondition()
+int Rule::getEndCondition()
 {
   return this->endCondition;
 }
 
-void Rule::SetStarving(bool starving)
+void Rule::setStarving(bool starving)
 {
   this->starving = starving;
 }
-bool Rule::GetStarving()
+bool Rule::getStarving()
 {
   return this->starving;
 }
 
-void Rule::SetEatWhenNbSeeds(vector<int> eatWhenNbSeeds)
+void Rule::setEatWhenNbSeeds(vector<int> eatWhenNbSeeds)
 {
   this->eatWhenNbSeeds = eatWhenNbSeeds;
 }
 
-vector<int> Rule::GetEatWhenNbSeeds()
+vector<int> Rule::getEatWhenNbSeeds()
 {
   return this->eatWhenNbSeeds;
 }

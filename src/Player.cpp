@@ -7,5 +7,14 @@ using namespace Game;
 */
 Player::Player()
 {
+  this->score = 0;
+}
 
+void Player::setScore(int score)
+{
+  this->score = score;
+}
+int Player::getScore()
+{
+  return this->score;
 }

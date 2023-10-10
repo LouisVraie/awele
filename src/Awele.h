@@ -15,6 +15,8 @@ namespace Game
   class Awele
   {
   private:
+    Rule *rule;
+
     Player *player1;
     Player *player2;
 
@@ -23,6 +25,8 @@ namespace Game
 
   public:
     Awele(Rule rule);
+    int getSeedsLeft();
+    bool isGameFinished();
   };
 }
 
