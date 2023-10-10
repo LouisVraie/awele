@@ -1,11 +1,11 @@
-#include "Awele.h"
+#include "Case.h"
 
 using namespace Game;
 
 /**
  * Constructor
 */
-Awele::Awele(Rule rule)
+Case::Case()
 {
 
 }

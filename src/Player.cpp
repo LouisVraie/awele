@@ -1,11 +1,11 @@
-#include "Awele.h"
+#include "Player.h"
 
 using namespace Game;
 
 /**
  * Constructor
 */
-Awele::Awele(Rule rule)
+Player::Player()
 {
 
 }

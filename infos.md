@@ -1,0 +1,2 @@
+- Evaluer les couleurs
+- Noter une position
