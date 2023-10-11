@@ -7,9 +7,9 @@
       "args": [
         "-fdiagnostics-color=always",
         "-g",
-        "${file}",
+        "${workspaceFolder}/src/*.cpp",
         "-o",
-        "${fileDirname}\\${fileBasenameNoExtension}.exe"
+        "${fileDirname}\\..\\Awele.exe"
       ],
       "options": {
         "cwd": "${fileDirname}"

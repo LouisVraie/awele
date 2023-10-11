@@ -10,10 +10,11 @@ namespace Game
   class Seed
   {
   private:
-    Color *color;
+    Color color;
 
   public:
     Seed(Color color);
+    Color getColor();
   };
 }
 

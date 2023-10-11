@@ -7,4 +7,10 @@ using namespace Game;
  */
 Seed::Seed(Color color)
 {
+  this->color = color;
+}
+
+Color Seed::getColor()
+{
+  return this->color;
 }

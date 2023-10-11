@@ -1,6 +1,7 @@
 #ifndef AWELE_H
 #define AWELE_H
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include "Player.h"
@@ -34,6 +35,8 @@ namespace Game
 
   public:
     Awele(Rule *rule);
+    void show();
+    void askMove();
     int getSeedsLeft();
     GameStatus checkGameStatus();
   };

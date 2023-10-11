@@ -2,21 +2,23 @@
 #define CASE_H
 
 #include <vector>
-#include "Rule.h"
+#include <iostream>
 #include "Seed.h"
 
 using namespace std;
 
 namespace Game
 {
-  class Case : public Rule
+  class Case 
   {
   private:
     vector<Seed *> seeds;
 
   public:
-    Case();
+    Case(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds);
     int getNbSeeds();
+    int getNbSeedsByColor(Color color);
+    void show();
   };
 }
 

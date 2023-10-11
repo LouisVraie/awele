@@ -5,6 +5,8 @@ using namespace std;
 
 int main()
 {
+  cout << "Awele Start" << endl;
+
   Rule rule;
 
   rule.setNbCases(16);
@@ -20,14 +22,16 @@ int main()
   rule.setStarving(true);
 
   rule.setEatWhenNbSeeds({2,3});
-
+  
   Awele awele = Awele(&rule);
 
   do
   {
-    /* code */
+    awele.show();
+    awele.askMove();
   } while (awele.checkGameStatus() == GameStatus::InProgress);
   
+  cout << "Awele End" << endl;
 
   return 0;
 }
