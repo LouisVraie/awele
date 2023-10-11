@@ -7,14 +7,64 @@ using namespace Game;
  */
 Awele::Awele(Rule *rule)
 {
+  // Set rules
   this->rule = rule;
 
-  // Creation of all cases
-  for (int iCase = 0; iCase < this->rule->getNbCases(); iCase++)
+  // Players initialization
+  this->player1 = new Player();
+  this->player2 = new Player();
+
+  this->player1->setName("Player1");
+  this->player2->setName("Player2");
+
+  vector<int> player1Holes, player2Holes;
+
+  for (int i = 0; i < this->rule->getNbHoles(); i++)
   {
-    Case *hole = new Case(this->rule->getNbBlueSeeds(), this->rule->getNbRedSeeds(), this->rule->getNbTransparentSeeds());
-    this->cases.push_back(hole);
+    if(i%2 == 0)
+    {
+      // Assigning odd holes
+      player1Holes.push_back(i);
+    } else {
+      // Assigning even holes
+      player2Holes.push_back(i);
+    }
   }
+  
+  this->player1->setAllowedHoles(player1Holes);
+  this->player2->setAllowedHoles(player2Holes);
+
+  this->turn = 0;
+
+  // Creation of all holes
+  for (int iHole = 0; iHole < this->rule->getNbHoles(); iHole++)
+  {
+    Hole *hole = new Hole(this->rule->getNbBlueSeeds(), this->rule->getNbRedSeeds(), this->rule->getNbTransparentSeeds());
+    this->holes.push_back(hole);
+  }
+}
+
+/**
+ * @brief Run the game
+ */
+void Awele::play()
+{
+  // Adding a new turn
+  this->turn++;
+
+  // Show the board
+  this->show();
+
+  // Ask the player to play
+  if(turn%2 == 1)
+  {
+    this->askMove(this->player1);
+  } else {
+    this->askMove(this->player2);
+  }
+
+  // Make the move
+
 }
 
 /**
@@ -22,13 +72,13 @@ Awele::Awele(Rule *rule)
  */
 void Awele::show()
 {
-  for (int i = 0; i < this->rule->getNbCases(); i++)
+  for (int i = 0; i < this->rule->getNbHoles(); i++)
   {
-    if (i == this->rule->getNbCases() / 2)
+    if (i == this->rule->getNbHoles() / 2)
     {
       cout << endl;
     }
-    this->cases[i]->show();
+    this->holes[i]->show();
   }
   cout << endl;
 }
@@ -36,30 +86,45 @@ void Awele::show()
 /**
  * @brief Ask the player to enter a move
  */
-void Awele::askMove()
+void Awele::askMove(Player *player)
 {
-  string position;
-  int choice;
+  string input;
+  int move;
 
   do
   {
-    cout << "Choose your move (1 - " << this->rule->getNbCases() << "): ";
-    cin >> position;
+    cout << player->getName() <<" Choose your move : ";
+    cin >> input;
 
     try
     {
-      choice = stoi(position);
-      if (choice < 1 || choice > this->rule->getNbCases())
+      move = stoi(input);
+      move--;
+      
+      if (!this->isMovePossible(player, move))
       {
-        cout << "Invalid input. Please enter a number between 1 and " << this->rule->getNbCases() << endl;
+        cout  << player->getName() << " Invalid move. Please enter a valid move." << endl;
       }
     }
-    catch (const invalid_argument &)
+    catch (const exception &)
     {
-      cout << "Invalid input. Please enter a valid number." << endl;
+      move = -1;
+      cout << player->getName() << " Invalid input. Please enter a valid move." << endl;
     }
 
-  } while (choice < 1 || choice > this->rule->getNbCases());
+  } while (!this->isMovePossible(player, move));
+
+  // Increment the number of move of the current player
+  player->setNbMoves(player->getNbMoves() + 1);
+}
+
+/**
+ * @brief Check if the given move is possible for the given player
+ * @return
+*/
+bool Awele::isMovePossible(Player * player, int move)
+{
+  return move >= 0 && move < this->rule->getNbHoles()-1 && player->isHoleAllowed(move);
 }
 
 /**
@@ -69,9 +134,9 @@ int Awele::getSeedsLeft()
 {
   int result = 0;
 
-  for (int i = 0; i < this->cases.size(); i++)
+  for (int i = 0; i < this->holes.size(); i++)
   {
-    result += this->cases[i]->getNbSeeds();
+    result += this->holes[i]->getNbSeeds();
   }
 
   return result;

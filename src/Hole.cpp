@@ -1,11 +1,11 @@
-#include "Case.h"
+#include "Hole.h"
 
 using namespace Game;
 
 /**
  * Constructor
  */
-Case::Case(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds)
+Hole::Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds)
 {
   // Creation of blue seed(s)
   for (int iBlue = 0; iBlue < nbBlueSeeds; iBlue++)
@@ -30,17 +30,17 @@ Case::Case(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds)
 }
 
 /**
- * @return The number of seeds of the current Case
+ * @return The number of seeds of the current Hole
  */
-int Case::getNbSeeds()
+int Hole::getNbSeeds()
 {
   return this->seeds.size();
 }
 
 /**
- * @brief Print the current case
+ * @brief Print the current hole
  */
-void Case::show()
+void Hole::show()
 {
   ConsoleColor consoleColor;
 
@@ -56,7 +56,7 @@ void Case::show()
   cout << "]";
 }
 
-int Case::getNbSeedsByColor(Color color)
+int Hole::getNbSeedsByColor(Color color)
 {
   int nbSeeds = 0;
 

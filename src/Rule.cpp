@@ -9,14 +9,14 @@ Rule::Rule()
 {
 }
 
-void Rule::setNbCases(int nbCases)
+void Rule::setNbHoles(int nbHoles)
 {
-  this->nbCases = nbCases;
+  this->nbHoles = nbHoles;
 }
 
-int Rule::getNbCases()
+int Rule::getNbHoles()
 {
-  return this->nbCases;
+  return this->nbHoles;
 }
 
 void Rule::setNbBlueSeeds(int nbBlueSeeds)

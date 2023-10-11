@@ -1,5 +1,5 @@
-#ifndef CASE_H
-#define CASE_H
+#ifndef HOLE_H
+#define HOLE_H
 
 #include <vector>
 #include <iostream>
@@ -9,13 +9,13 @@ using namespace std;
 
 namespace Game
 {
-  class Case 
+  class Hole 
   {
   private:
     vector<Seed *> seeds;
 
   public:
-    Case(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds);
+    Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds);
     int getNbSeeds();
     int getNbSeedsByColor(Color color);
     void show();

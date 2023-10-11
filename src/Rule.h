@@ -10,7 +10,7 @@ namespace Game
   class Rule
   {
   private:
-    int nbCases;
+    int nbHoles;
 
     int nbBlueSeeds;
     int nbRedSeeds;
@@ -26,8 +26,8 @@ namespace Game
   public:
     Rule();
 
-    void setNbCases(int nbCases);
-    int getNbCases();
+    void setNbHoles(int nbHoles);
+    int getNbHoles();
 
     void setNbBlueSeeds(int nbBlueSeeds);
     int getNbBlueSeeds();

@@ -4,9 +4,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include "Player.h"
 #include "Seed.h"
-#include "Case.h"
+#include "Hole.h"
 #include "Rule.h"
 
 using namespace std;
@@ -30,13 +31,15 @@ namespace Game
     Player *player1;
     Player *player2;
 
-    vector<Case *> cases;
+    vector<Hole *> holes;
     int turn;
 
   public:
     Awele(Rule *rule);
+    void play();
     void show();
-    void askMove();
+    void askMove(Player *player);
+    bool isMovePossible(Player * player, int input);
     int getSeedsLeft();
     GameStatus checkGameStatus();
   };

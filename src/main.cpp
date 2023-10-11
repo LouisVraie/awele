@@ -9,7 +9,7 @@ int main()
 
   Rule rule;
 
-  rule.setNbCases(16);
+  rule.setNbHoles(16);
 
   rule.setNbBlueSeeds(2);
   rule.setNbRedSeeds(2);
@@ -27,8 +27,7 @@ int main()
 
   do
   {
-    awele.show();
-    awele.askMove();
+    awele.play();
   } while (awele.checkGameStatus() == GameStatus::InProgress);
   
   cout << "Awele End" << endl;
