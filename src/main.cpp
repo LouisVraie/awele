@@ -21,15 +21,15 @@ int main()
 
   rule.setStarving(true);
 
-  rule.setEatWhenNbSeeds({2,3});
-  
+  rule.setEatWhenNbSeeds({2, 3});
+
   Awele awele = Awele(&rule);
 
   do
   {
     awele.play();
   } while (awele.checkGameStatus() == GameStatus::InProgress);
-  
+
   cout << "Awele End" << endl;
 
   return 0;

@@ -14,7 +14,7 @@ namespace Game
     const string red = "\033[31m";
     const string transparent = "\033[37m";
   };
-  
+
   enum Color
   {
     Blue = 1,

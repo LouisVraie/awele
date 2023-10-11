@@ -17,7 +17,7 @@ void Player::setName(string name)
 }
 string Player::getName()
 {
-return "["+this->name+"]";
+  return "[" + this->name + "]";
 }
 
 void Player::setScore(int score)

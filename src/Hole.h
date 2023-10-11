@@ -9,7 +9,7 @@ using namespace std;
 
 namespace Game
 {
-  class Hole 
+  class Hole
   {
   private:
     vector<Seed *> seeds;

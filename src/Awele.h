@@ -39,7 +39,7 @@ namespace Game
     void play();
     void show();
     void askMove(Player *player);
-    bool isMovePossible(Player * player, int input);
+    bool isMovePossible(Player *player, int input);
     int getSeedsLeft();
     GameStatus checkGameStatus();
   };

@@ -50,9 +50,9 @@ void Hole::show()
   cout << consoleColor.base << "|";
   cout << consoleColor.red << this->getNbSeedsByColor(Color::Red);
   cout << consoleColor.base << "|";
-  cout << consoleColor.transparent  << this->getNbSeedsByColor(Color::Transparent);
+  cout << consoleColor.transparent << this->getNbSeedsByColor(Color::Transparent);
   cout << consoleColor.base;
-  
+
   cout << "]";
 }
 
@@ -62,7 +62,7 @@ int Hole::getNbSeedsByColor(Color color)
 
   for (int i = 0; i < this->seeds.size(); i++)
   {
-    if(this->seeds[i]->getColor() == color)
+    if (this->seeds[i]->getColor() == color)
     {
       nbSeeds++;
     }

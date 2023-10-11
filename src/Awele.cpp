@@ -21,16 +21,18 @@ Awele::Awele(Rule *rule)
 
   for (int i = 0; i < this->rule->getNbHoles(); i++)
   {
-    if(i%2 == 0)
+    if (i % 2 == 0)
     {
       // Assigning odd holes
       player1Holes.push_back(i);
-    } else {
+    }
+    else
+    {
       // Assigning even holes
       player2Holes.push_back(i);
     }
   }
-  
+
   this->player1->setAllowedHoles(player1Holes);
   this->player2->setAllowedHoles(player2Holes);
 
@@ -56,15 +58,16 @@ void Awele::play()
   this->show();
 
   // Ask the player to play
-  if(turn%2 == 1)
+  if (turn % 2 == 1)
   {
     this->askMove(this->player1);
-  } else {
+  }
+  else
+  {
     this->askMove(this->player2);
   }
 
   // Make the move
-
 }
 
 /**
@@ -93,17 +96,17 @@ void Awele::askMove(Player *player)
 
   do
   {
-    cout << player->getName() <<" Choose your move : ";
+    cout << player->getName() << " Choose your move : ";
     cin >> input;
 
     try
     {
       move = stoi(input);
       move--;
-      
+
       if (!this->isMovePossible(player, move))
       {
-        cout  << player->getName() << " Invalid move. Please enter a valid move." << endl;
+        cout << player->getName() << " Invalid move. Please enter a valid move." << endl;
       }
     }
     catch (const exception &)
@@ -121,10 +124,10 @@ void Awele::askMove(Player *player)
 /**
  * @brief Check if the given move is possible for the given player
  * @return
-*/
-bool Awele::isMovePossible(Player * player, int move)
+ */
+bool Awele::isMovePossible(Player *player, int move)
 {
-  return move >= 0 && move < this->rule->getNbHoles()-1 && player->isHoleAllowed(move);
+  return move >= 0 && move < this->rule->getNbHoles() - 1 && player->isHoleAllowed(move);
 }
 
 /**
