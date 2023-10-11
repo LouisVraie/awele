@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Color.h"
 
 using namespace std;
 
@@ -15,6 +16,9 @@ namespace Game
     string name;
     int score;
     int nbMoves;
+    int chosenHole;
+    Color chosenColor;
+    bool chosenIsTransparent;
 
     vector<int> allowedHoles;
 
@@ -29,6 +33,13 @@ namespace Game
 
     void setNbMoves(int nbMoves);
     int getNbMoves();
+
+    void setChosenHole(int chosenHole);
+    int getChosenHole();
+    void setChosenColor(char chosenColor);
+    Color getChosenColor();
+    void setChosenIsTransparent(bool chosenIsTransparent);
+    bool getChosenIsTransparent();
 
     void setAllowedHoles(vector<int> allowedHoles);
     vector<int> getAllowedHoles();

@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 #include "Player.h"
 #include "Seed.h"
 #include "Hole.h"
@@ -39,7 +40,8 @@ namespace Game
     void play();
     void show();
     void askMove(Player *player);
-    bool isMovePossible(Player *player, int input);
+    void makeMove(Player *player);
+    bool isMovePossible(Player *player, int chosenMove, char chosenColor, bool chosenIsTransparent);
     int getSeedsLeft();
     GameStatus checkGameStatus();
   };

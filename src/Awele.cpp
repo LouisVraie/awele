@@ -51,23 +51,29 @@ Awele::Awele(Rule *rule)
  */
 void Awele::play()
 {
+  Player *currentPlayer = nullptr;
+
   // Adding a new turn
   this->turn++;
 
   // Show the board
   this->show();
 
-  // Ask the player to play
+  // Select the player to play
   if (turn % 2 == 1)
   {
-    this->askMove(this->player1);
+    currentPlayer = this->player1;
   }
   else
   {
-    this->askMove(this->player2);
+    currentPlayer = this->player2;
   }
 
+  // Ask the player to play
+  this->askMove(currentPlayer);
+
   // Make the move
+  this->makeMove(currentPlayer);
 }
 
 /**
@@ -92,7 +98,12 @@ void Awele::show()
 void Awele::askMove(Player *player)
 {
   string input;
-  int move;
+  char chosenColor;
+  int chosenNumber;
+  bool chosenIsTransparent = false;
+  int chosenHole;
+
+  bool endAskCondition = true;
 
   do
   {
@@ -101,33 +112,72 @@ void Awele::askMove(Player *player)
 
     try
     {
-      move = stoi(input);
-      move--;
-
-      if (!this->isMovePossible(player, move))
+      int inputLength = input.length();
+      // Cut the number and the string
+      if (inputLength >= 2)
       {
-        cout << player->getName() << " Invalid move. Please enter a valid move." << endl;
+        // Put the string toupper
+        transform(input.begin(), input.end(), input.begin(), ::toupper);
+
+        string lastTwoChars = input.substr(inputLength - 2);
+
+        if (lastTwoChars[0] == 'T')
+        {
+          chosenIsTransparent = true;
+          chosenHole = stoi(input.substr(0, inputLength - 2));
+        }
+        else
+        {
+          chosenHole = stoi(input.substr(0, inputLength - 1));
+        }
+        // get the chosen color
+        chosenColor = lastTwoChars[1];
+
+        chosenHole--;
+
+        if (endAskCondition = !this->isMovePossible(player, chosenHole, chosenColor, chosenIsTransparent))
+        {
+          cout << player->getName() << " Invalid move. Please enter a valid move." << endl;
+        }
       }
     }
     catch (const exception &)
     {
-      move = -1;
+      chosenHole = -1;
       cout << player->getName() << " Invalid input. Please enter a valid move." << endl;
     }
 
-  } while (!this->isMovePossible(player, move));
+  } while (endAskCondition);
 
   // Increment the number of move of the current player
   player->setNbMoves(player->getNbMoves() + 1);
+
+  // Set the chosen move infos
+  player->setChosenHole(chosenHole);
+  player->setChosenColor(chosenColor);
+  player->setChosenIsTransparent(chosenIsTransparent);
+}
+
+/**
+ * @brief Perform the move chosen by the player
+ */
+void Awele::makeMove(Player *player)
+{
+  // if blue
+
+  // if red
+
+  // if transparent
 }
 
 /**
  * @brief Check if the given move is possible for the given player
  * @return
  */
-bool Awele::isMovePossible(Player *player, int move)
+bool Awele::isMovePossible(Player *player, int chosenHole, char chosenColor, bool chosenIsTransparent)
 {
-  return move >= 0 && move < this->rule->getNbHoles() - 1 && player->isHoleAllowed(move);
+  // TODO : check if there is seeds left in the given hole for the given color
+  return chosenHole >= 0 && chosenHole < this->rule->getNbHoles() - 1 && player->isHoleAllowed(chosenHole);
 }
 
 /**

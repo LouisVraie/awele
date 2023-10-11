@@ -38,6 +38,43 @@ int Player::getNbMoves()
   return this->nbMoves;
 }
 
+void Player::setChosenHole(int chosenHole)
+{
+  this->chosenHole = chosenHole;
+}
+int Player::getChosenHole()
+{
+  return this->chosenHole;
+}
+
+void Player::setChosenColor(char chosenColor)
+{
+  switch (chosenColor)
+  {
+  case 'B':
+    this->chosenColor = Color::Blue;
+    break;
+  case 'R':
+    this->chosenColor = Color::Red;
+    break;
+  default:
+    cout << chosenColor << " is not a valid color !" << endl;
+  }
+}
+Color Player::getChosenColor()
+{
+  return this->chosenColor;
+}
+
+void Player::setChosenIsTransparent(bool chosenIsTransparent)
+{
+  this->chosenIsTransparent = chosenIsTransparent;
+}
+bool Player::getChosenIsTransparent()
+{
+  return this->chosenIsTransparent;
+}
+
 void Player::setAllowedHoles(vector<int> allowedHoles)
 {
   this->allowedHoles = allowedHoles;
