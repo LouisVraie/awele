@@ -12,6 +12,15 @@ using namespace std;
 
 namespace Game
 {
+  enum GameStatus
+  {
+    InProgress = 0,
+    Player1Win = 1,
+    Player2Win = 2,
+    Draw = 3,
+    End = 4,
+  };
+
   class Awele
   {
   private:
@@ -24,9 +33,9 @@ namespace Game
     int turn;
 
   public:
-    Awele(Rule rule);
+    Awele(Rule *rule);
     int getSeedsLeft();
-    bool isGameFinished();
+    GameStatus checkGameStatus();
   };
 }
 

@@ -5,7 +5,8 @@ using namespace std;
 
 namespace Game
 {
-  enum Color {
+  enum Color
+  {
     Blue = 1,
     Red = 2,
     Transparent = 3

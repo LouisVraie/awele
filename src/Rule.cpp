@@ -4,10 +4,9 @@ using namespace Game;
 
 /**
  * Constructor
-*/
+ */
 Rule::Rule()
 {
-
 }
 
 void Rule::setNbCases(int nbCases)

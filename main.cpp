@@ -21,12 +21,12 @@ int main()
 
   rule.setEatWhenNbSeeds({2,3});
 
-  Awele awele = Awele(rule);
+  Awele awele = Awele(&rule);
 
   do
   {
     /* code */
-  } while (awele.isGameFinished());
+  } while (awele.checkGameStatus() == GameStatus::InProgress);
   
 
   return 0;

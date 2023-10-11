@@ -4,7 +4,7 @@ using namespace Game;
 
 /**
  * Constructor
-*/
+ */
 Player::Player()
 {
   this->score = 0;
