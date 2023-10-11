@@ -47,19 +47,9 @@ int Player::getChosenHole()
   return this->chosenHole;
 }
 
-void Player::setChosenColor(char chosenColor)
+void Player::setChosenColor(Color chosenColor)
 {
-  switch (chosenColor)
-  {
-  case 'B':
-    this->chosenColor = Color::Blue;
-    break;
-  case 'R':
-    this->chosenColor = Color::Red;
-    break;
-  default:
-    cout << chosenColor << " is not a valid color !" << endl;
-  }
+  this->chosenColor = chosenColor;
 }
 Color Player::getChosenColor()
 {

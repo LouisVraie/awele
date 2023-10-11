@@ -2,6 +2,7 @@
 #define COLOR_H
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -17,10 +18,13 @@ namespace Game
 
   enum Color
   {
+    Default = 0,
     Blue = 1,
     Red = 2,
     Transparent = 3
   };
+
+  Color getColorFromLetter(char letter);
 }
 
 #endif

@@ -36,7 +36,7 @@ namespace Game
 
     void setChosenHole(int chosenHole);
     int getChosenHole();
-    void setChosenColor(char chosenColor);
+    void setChosenColor(Color chosenColor);
     Color getChosenColor();
     void setChosenIsTransparent(bool chosenIsTransparent);
     bool getChosenIsTransparent();

@@ -41,7 +41,7 @@ namespace Game
     void show();
     void askMove(Player *player);
     void makeMove(Player *player);
-    bool isMovePossible(Player *player, int chosenMove, char chosenColor, bool chosenIsTransparent);
+    bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
     int getSeedsLeft();
     GameStatus checkGameStatus();
   };

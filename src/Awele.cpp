@@ -98,8 +98,7 @@ void Awele::show()
 void Awele::askMove(Player *player)
 {
   string input;
-  char chosenColor;
-  int chosenNumber;
+  Color chosenColor = Color::Default;
   bool chosenIsTransparent = false;
   int chosenHole;
 
@@ -131,7 +130,7 @@ void Awele::askMove(Player *player)
           chosenHole = stoi(input.substr(0, inputLength - 1));
         }
         // get the chosen color
-        chosenColor = lastTwoChars[1];
+        chosenColor = getColorFromLetter(lastTwoChars[1]);
 
         chosenHole--;
 
@@ -174,10 +173,13 @@ void Awele::makeMove(Player *player)
  * @brief Check if the given move is possible for the given player
  * @return
  */
-bool Awele::isMovePossible(Player *player, int chosenHole, char chosenColor, bool chosenIsTransparent)
+bool Awele::isMovePossible(Player *player, int chosenHole, Color chosenColor, bool chosenIsTransparent)
 {
-  // TODO : check if there is seeds left in the given hole for the given color
-  return chosenHole >= 0 && chosenHole < this->rule->getNbHoles() - 1 && player->isHoleAllowed(chosenHole);
+  return chosenColor != Color::Default
+  && this->holes[chosenHole]->getNbSeedsByColor(chosenColor) > 0
+  && chosenHole >= 0 
+  && chosenHole < this->rule->getNbHoles() - 1 
+  && player->isHoleAllowed(chosenHole);
 }
 
 /**
