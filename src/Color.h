@@ -24,7 +24,20 @@ namespace Game
     Transparent = 3
   };
 
-  Color getColorFromLetter(char letter);
+  inline Color getColorFromLetter(char letter)
+  {
+    switch (letter)
+    {
+    case 'B':
+      return Color::Blue;
+      break;
+    case 'R':
+      return Color::Red;
+      break;
+    default:
+      return Color::Default;
+    }
+  }
 }
 
 #endif
