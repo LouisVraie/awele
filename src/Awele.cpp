@@ -163,10 +163,73 @@ void Awele::askMove(Player *player)
 void Awele::makeMove(Player *player)
 {
   // if blue
-
+  if (player->getChosenColor() == Color::Blue)
+  {
+    this->moveBlue(player);
+  }
   // if red
+  if (player->getChosenColor() == Color::Red)
+  {
+    this->moveRed(player);
+  }
+}
+
+/**
+ * @brief Perform a blue move
+ */
+void Awele::moveBlue(Player *player)
+{
+  vector<Seed *> seeds;
+
+  // get opponent holes
+  vector<int> opponentHoles = this->getOpponentHoles(player);
 
   // if transparent
+  if (player->getChosenIsTransparent())
+  {
+    // get transparent seeds of the chosen hole like blue seeds
+    seeds = this->holes[player->getChosenHole()]->getSeedsByColor(Color::Transparent);
+  }
+  else
+  {
+    // get blue seeds of the chosen hole
+    seeds = this->holes[player->getChosenHole()]->getSeedsByColor(Color::Blue);
+  }
+
+  // foreach seed
+  for (int i = 0; i < seeds.size(); i++)
+  {
+    int targetHoleIndex = (player->getChosenHole()/2 + i) % opponentHoles.size(); //TODO : Fix l'index
+    // cout << "Targets index : " << targetHoleIndex << endl;
+    int targetHole = opponentHoles[targetHoleIndex];
+
+    cout << "Targets holes : " << targetHole << endl;
+    // We add the seed to the new hole
+    this->holes[targetHole]->addSeed(seeds[i]);
+
+    // We remove the seed of the origin hole
+    this->holes[player->getChosenHole()]->removeSeed(seeds[i]);
+  }
+}
+
+/**
+ * @brief Perform a red move
+ */
+void Awele::moveRed(Player *player)
+{
+  vector<Seed *> seeds;
+
+  // if transparent
+  if (player->getChosenIsTransparent())
+  {
+    // get transparent seeds of the chosen hole like red seeds
+    seeds = this->holes[player->getChosenHole()]->getSeedsByColor(Color::Transparent);
+  }
+  else
+  {
+    // get red seeds of the chosen hole
+    seeds = this->holes[player->getChosenHole()]->getSeedsByColor(Color::Red);
+  }
 }
 
 /**
@@ -175,11 +238,7 @@ void Awele::makeMove(Player *player)
  */
 bool Awele::isMovePossible(Player *player, int chosenHole, Color chosenColor, bool chosenIsTransparent)
 {
-  return chosenColor != Color::Default
-  && this->holes[chosenHole]->getNbSeedsByColor(chosenColor) > 0
-  && chosenHole >= 0 
-  && chosenHole < this->rule->getNbHoles() - 1 
-  && player->isHoleAllowed(chosenHole);
+  return chosenColor != Color::Default && this->holes[chosenHole]->getNbSeedsByColor(chosenColor) > 0 && chosenHole >= 0 && chosenHole <= this->rule->getNbHoles() - 1 && player->isHoleAllowed(chosenHole);
 }
 
 /**
@@ -195,6 +254,20 @@ int Awele::getSeedsLeft()
   }
 
   return result;
+}
+
+/**
+ * @brief Get the opponent holes indexs
+ * @return Pointer of the allowedHoles of the opponent player
+ */
+vector<int> Awele::getOpponentHoles(Player *player)
+{
+  if (player == this->player1)
+  {
+    return player2->getAllowedHoles();
+  }
+
+  return player1->getAllowedHoles();
 }
 
 /**

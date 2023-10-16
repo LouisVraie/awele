@@ -41,8 +41,11 @@ namespace Game
     void show();
     void askMove(Player *player);
     void makeMove(Player *player);
+    void moveBlue(Player *player);
+    void moveRed(Player *player);
     bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
     int getSeedsLeft();
+    vector<int> getOpponentHoles(Player *player);
     GameStatus checkGameStatus();
   };
 }

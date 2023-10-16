@@ -18,6 +18,9 @@ namespace Game
     Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds);
     int getNbSeeds();
     int getNbSeedsByColor(Color color);
+    vector<Seed*> getSeedsByColor(Color color);
+    void addSeed(Seed *seed);
+    void removeSeed(Seed *seed);
     void show();
   };
 }

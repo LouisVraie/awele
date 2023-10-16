@@ -70,3 +70,47 @@ int Hole::getNbSeedsByColor(Color color)
 
   return nbSeeds;
 }
+
+/**
+ * @brief Get the seeds of by the color
+ * @return Vector of seeds pointers of the current hole of the given color
+ */
+vector<Seed *> Hole::getSeedsByColor(Color color)
+{
+  vector<Seed *> seeds;
+
+  for (Seed *seed : this->seeds)
+  {
+    if(seed->getColor() == color)
+    {
+      seeds.push_back(seed);
+    }
+  }
+
+  return seeds;
+}
+
+/**
+ * @brief Add the given seed to the hole
+ */
+void Hole::addSeed(Seed *seed)
+{
+  this->seeds.push_back(seed);
+}
+
+/**
+ * @brief Remove the given seed of the hole
+ */
+void Hole::removeSeed(Seed *seed)
+{
+  // Parcourez les graines dans le trou
+  for (auto it = seeds.begin(); it != seeds.end(); ++it)
+  {
+    if (*it == seed)
+    {
+      // Remove the seed
+      seeds.erase(it);
+      break;
+    }
+  }
+}
