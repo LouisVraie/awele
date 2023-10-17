@@ -39,6 +39,7 @@ namespace Game
     Awele(Rule *rule);
     void play();
     void show();
+    string randomMove(Player *player);
     void askMove(Player *player);
     void makeMove(Player *player);
     void moveBlue(Player *player);
@@ -46,6 +47,7 @@ namespace Game
     void scoreAfterMove(Player *player);
     bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
     int getSeedsLeft();
+    int getSeedsLeft(Player *player);
     vector<int> getOpponentHoles(Player *player);
     GameStatus checkGameStatus();
   };

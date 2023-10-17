@@ -102,6 +102,39 @@ void Awele::show()
 }
 
 /**
+ * @brief Get a random input for the given player
+ * @return
+ */
+string Awele::randomMove(Player *player)
+{
+  string input;
+  int hole = rand() % (this->rule->getNbHoles() / 2);
+
+  int number = player->getAllowedHoles()[hole] + 1;
+  input = to_string(number);
+
+  int letter = rand() % 4 + 1;
+
+  switch (letter)
+  {
+  case 1:
+    input += "B";
+    break;
+  case 2:
+    input += "R";
+    break;
+  case 3:
+    input += "TB";
+    break;
+  case 4:
+    input += "TR";
+    break;
+  }
+  cout << input << endl;
+  return input;
+}
+
+/**
  * @brief Ask the player to enter a move
  */
 void Awele::askMove(Player *player)
@@ -118,7 +151,8 @@ void Awele::askMove(Player *player)
     chosenIsTransparent = false;
 
     cout << player->getName() << " Choose your move : ";
-    getline(cin, input);
+    // getline(cin, input);
+    input = this->randomMove(player);
 
     try
     {
@@ -303,9 +337,7 @@ void Awele::scoreAfterMove(Player *player)
         continueCheck = true;
         player->addScore(nbSeeds);
 
-        cout << "Target index : " << targetIndex << " | nbSeeds : " << nbSeeds << endl;
         this->holes[targetIndex]->removeAllSeeds();
-        cout << "NbSeeds of hole : " << this->holes[targetIndex]->getNbSeeds() << endl;
       }
     }
 
@@ -339,6 +371,23 @@ int Awele::getSeedsLeft()
 }
 
 /**
+ * @brief Get numbers of seeds left for the given player
+ * @return
+ */
+int Awele::getSeedsLeft(Player *player)
+{
+  int result = 0;
+  vector<int> allowedHoles = player->getAllowedHoles();
+
+  for (int i = 0; i < allowedHoles.size(); i++)
+  {
+    result += this->holes[allowedHoles[i]]->getNbSeeds();
+  }
+
+  return result;
+}
+
+/**
  * @brief Get the opponent holes indexs
  * @return Pointer of the allowedHoles of the opponent player
  */
@@ -359,25 +408,25 @@ vector<int> Awele::getOpponentHoles(Player *player)
 GameStatus Awele::checkGameStatus()
 {
   // if player1 won
-  if (this->player1->getScore() >= this->rule->getWinCondition())
+  if (this->player1->getScore() >= this->rule->getWinCondition() || this->getSeedsLeft(player2) == 0)
   {
     return GameStatus::Player1Win;
   }
 
   // if player2 won
-  if (this->player2->getScore() >= this->rule->getWinCondition())
+  if (this->player2->getScore() >= this->rule->getWinCondition() || this->getSeedsLeft(player1) == 0)
   {
     return GameStatus::Player2Win;
   }
 
   // if draw
-  if (this->player2->getScore() == this->rule->getDrawCondition() && this->player2->getScore() == this->rule->getDrawCondition())
+  if (this->player1->getScore() == this->rule->getDrawCondition() && this->player2->getScore() == this->rule->getDrawCondition())
   {
     return GameStatus::Draw;
   }
 
   // if endCondition
-  if (this->getSeedsLeft() <= this->rule->getEndCondition())
+  if (this->getSeedsLeft() < this->rule->getEndCondition())
   {
     return GameStatus::End;
   }

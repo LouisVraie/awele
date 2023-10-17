@@ -7,7 +7,9 @@ int main()
 {
   cout << "Awele Start" << endl;
 
+  srand(time(NULL));
   Rule rule;
+  GameStatus gameStatus;
 
   rule.setNbHoles(16);
 
@@ -28,11 +30,13 @@ int main()
   do
   {
     awele.play();
-  } while (awele.checkGameStatus() == GameStatus::InProgress);
+    gameStatus = awele.checkGameStatus();
+  } while (gameStatus == GameStatus::InProgress);
 
   cout << "<> Partie terminée !!! <>" << endl;
+  cout << "<>    GameStatus : " << gameStatus << "   <>"<< endl;
+  cout << "<> Seeds on board : " << awele.getSeedsLeft() << " <>" << endl;
   awele.show();
-  
   cout << "Awele End" << endl;
 
   return 0;
