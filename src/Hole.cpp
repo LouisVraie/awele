@@ -119,8 +119,5 @@ void Hole::removeSeed(Seed *seed)
  */
 void Hole::removeAllSeeds()
 {
-  for (int i = 0; i < seeds.size(); i++)
-  {
-    this->removeSeed(seeds[i]);
-  }
+  this->seeds.clear();
 }

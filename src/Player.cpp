@@ -11,6 +11,16 @@ Player::Player()
   this->nbMoves = 0;
 }
 
+/**
+ * @brief Print player infos
+ */
+void Player::show()
+{
+  cout << "[" << this->name << "] ";
+  cout << "Score : " << this->score;
+  cout << endl;
+}
+
 void Player::setName(string name)
 {
   this->name = name;
@@ -67,6 +77,15 @@ void Player::setChosenIsTransparent(bool chosenIsTransparent)
 bool Player::getChosenIsTransparent()
 {
   return this->chosenIsTransparent;
+}
+
+void Player::setLastHoleIndex(int lastHoleIndex)
+{
+  this->lastHoleIndex = lastHoleIndex;
+}
+int Player::getLastHoleIndex()
+{
+  return this->lastHoleIndex;
 }
 
 void Player::setAllowedHoles(vector<int> allowedHoles)

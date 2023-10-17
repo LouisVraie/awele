@@ -20,10 +20,14 @@ namespace Game
     Color chosenColor;
     bool chosenIsTransparent;
 
+    int lastHoleIndex;
+
     vector<int> allowedHoles;
 
   public:
     Player();
+
+    void show();
 
     void setName(string name);
     string getName();
@@ -41,6 +45,9 @@ namespace Game
     Color getChosenColor();
     void setChosenIsTransparent(bool chosenIsTransparent);
     bool getChosenIsTransparent();
+
+    void setLastHoleIndex(int lastHoleIndex);
+    int getLastHoleIndex();
 
     void setAllowedHoles(vector<int> allowedHoles);
     vector<int> getAllowedHoles();
