@@ -103,7 +103,7 @@ void Hole::addSeed(Seed *seed)
  */
 void Hole::removeSeed(Seed *seed)
 {
-  for (auto it = seeds.begin(); it != seeds.end(); ++it)
+  for (auto it = seeds.begin(); it != seeds.end(); it++)
   {
     if (*it == seed)
     {
@@ -111,5 +111,16 @@ void Hole::removeSeed(Seed *seed)
       seeds.erase(it);
       break;
     }
+  }
+}
+
+/**
+ * @brief Remove all seeds of the hole
+ */
+void Hole::removeAllSeeds()
+{
+  for (int i = 0; i < seeds.size(); i++)
+  {
+    this->removeSeed(seeds[i]);
   }
 }

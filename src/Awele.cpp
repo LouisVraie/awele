@@ -74,6 +74,9 @@ void Awele::play()
 
   // Make the move
   this->makeMove(currentPlayer);
+
+  // Update the score after the move
+  this->scoreAfterMove(currentPlayer);
 }
 
 /**
@@ -245,6 +248,37 @@ void Awele::moveRed(Player *player)
     // We remove the seed of the origin hole
     this->holes[player->getChosenHole()]->removeSeed(seeds[i]);
   }
+}
+
+/**
+ * @brief Update the board and the score after a player move
+ */
+void Awele::scoreAfterMove(Player *player)
+{
+  bool continueCheck;
+  vector<int> scoringPossibility = this->rule->getEatWhenNbSeeds();
+  int targetIndex, nbSeeds;
+
+  do
+  {
+    continueCheck = false;
+    targetIndex = (this->rule->getNbHoles() + player->getChosenHole() - 1) % this->rule->getNbHoles();
+
+    // foreach scoringPossibility
+    for (int i = 0; i < scoringPossibility.size(); i++)
+    {
+      nbSeeds = this->holes[targetIndex]->getNbSeeds();
+
+      // if we got the same amount of seeds
+      if (scoringPossibility[i] == nbSeeds)
+      {
+        continueCheck = true;
+        player->addScore(nbSeeds);
+
+        this->holes[targetIndex]->removeAllSeeds();
+      }
+    }
+  } while (continueCheck);
 }
 
 /**

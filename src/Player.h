@@ -30,6 +30,7 @@ namespace Game
 
     void setScore(int score);
     int getScore();
+    void addScore(int score);
 
     void setNbMoves(int nbMoves);
     int getNbMoves();

@@ -43,6 +43,7 @@ namespace Game
     void makeMove(Player *player);
     void moveBlue(Player *player);
     void moveRed(Player *player);
+    void scoreAfterMove(Player *player);
     bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
     int getSeedsLeft();
     vector<int> getOpponentHoles(Player *player);

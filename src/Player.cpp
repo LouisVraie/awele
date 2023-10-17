@@ -28,6 +28,10 @@ int Player::getScore()
 {
   return this->score;
 }
+void Player::addScore(int score)
+{
+  this->score += score;
+}
 
 void Player::setNbMoves(int nbMoves)
 {

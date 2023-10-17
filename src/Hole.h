@@ -21,6 +21,7 @@ namespace Game
     vector<Seed*> getSeedsByColor(Color color);
     void addSeed(Seed *seed);
     void removeSeed(Seed *seed);
+    void removeAllSeeds();
     void show();
   };
 }
