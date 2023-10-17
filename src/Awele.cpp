@@ -86,7 +86,7 @@ void Awele::show()
     this->holes[i]->show();
   }
   cout << endl;
-  for (int i = this->rule->getNbHoles()-1; i >= this->rule->getNbHoles() / 2; i--)
+  for (int i = this->rule->getNbHoles() - 1; i >= this->rule->getNbHoles() / 2; i--)
   {
     this->holes[i]->show();
   }
@@ -200,11 +200,12 @@ void Awele::moveBlue(Player *player)
   // foreach seed
   for (int i = 0; i < seeds.size(); i++)
   {
-    int targetHoleIndex = (player->getChosenHole()/2 + i) % opponentHoles.size(); //TODO : Fix l'index
-    // cout << "Targets index : " << targetHoleIndex << endl;
+
+    int chosenHole = player->getChosenHole() % 2 == 1 ? player->getChosenHole() + 1 : player->getChosenHole();
+
+    int targetHoleIndex = (chosenHole / 2 + i) % opponentHoles.size();
     int targetHole = opponentHoles[targetHoleIndex];
 
-    cout << "Targets holes : " << targetHole << endl;
     // We add the seed to the new hole
     this->holes[targetHole]->addSeed(seeds[i]);
 
