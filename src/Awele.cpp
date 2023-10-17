@@ -116,9 +116,9 @@ void Awele::askMove(Player *player)
   do
   {
     chosenIsTransparent = false;
-    
+
     cout << player->getName() << " Choose your move : ";
-    cin >> input;
+    getline(cin, input);
 
     try
     {
@@ -232,30 +232,48 @@ void Awele::moveBlue(Player *player)
 void Awele::moveRed(Player *player)
 {
   vector<Seed *> seeds;
-  int targetHole = 0;
+  int targetHole = player->getChosenHole();
+  int i = 0;
+  Color color;
 
   // if transparent
   if (player->getChosenIsTransparent())
   {
-    // get transparent seeds of the chosen hole like red seeds
-    seeds = this->holes[player->getChosenHole()]->getSeedsByColor(Color::Transparent);
+    color = Color::Transparent;
   }
   else
   {
-    // get red seeds of the chosen hole
-    seeds = this->holes[player->getChosenHole()]->getSeedsByColor(Color::Red);
+    color = Color::Red;
   }
 
-  // foreach seed
-  for (int i = 0; i < seeds.size(); i++)
+  // get seeds of the chosen hole
+  seeds = this->holes[player->getChosenHole()]->getSeedsByColor(color);
+
+  // while the hole got seeds
+  while (this->holes[player->getChosenHole()]->getNbSeedsByColor(color) != 0)
   {
-    targetHole = (player->getChosenHole() + 1 + i) % this->rule->getNbHoles();
+    targetHole = (targetHole + 1) % this->rule->getNbHoles();
 
-    // We add the seed to the new hole
-    this->holes[targetHole]->addSeed(seeds[i]);
+    // we skip the chosen hole if the player did more than one turn of the board
+    cout << "Target hole : " << targetHole << " | ChosenHole : " << player->getChosenHole() << endl;
+    if (targetHole != player->getChosenHole())
+    {
+      // Check if i is a valid index for seeds
+      if (i < seeds.size())
+      {
+        // We add the seed to the new hole
+        this->holes[targetHole]->addSeed(seeds[i]);
 
-    // We remove the seed of the origin hole
-    this->holes[player->getChosenHole()]->removeSeed(seeds[i]);
+        // We remove the seed of the origin hole
+        this->holes[player->getChosenHole()]->removeSeed(seeds[i]);
+
+        i++;
+      }
+      else
+      {
+        break;
+      }
+    }
   }
 
   player->setLastHoleIndex(targetHole);
@@ -286,7 +304,7 @@ void Awele::scoreAfterMove(Player *player)
         continueCheck = true;
         player->addScore(nbSeeds);
 
-        cout << "Target index : "<< targetIndex << " | nbSeeds : " << nbSeeds << endl;
+        cout << "Target index : " << targetIndex << " | nbSeeds : " << nbSeeds << endl;
         this->holes[targetIndex]->removeAllSeeds();
         cout << "NbSeeds of hole : " << this->holes[targetIndex]->getNbSeeds() << endl;
       }
@@ -341,8 +359,6 @@ vector<int> Awele::getOpponentHoles(Player *player)
  */
 GameStatus Awele::checkGameStatus()
 {
-  int result = GameStatus::InProgress;
-
   // if player1 won
   if (this->player1->getScore() >= this->rule->getWinCondition())
   {
