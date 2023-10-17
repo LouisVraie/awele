@@ -81,12 +81,13 @@ void Awele::play()
  */
 void Awele::show()
 {
-  for (int i = 0; i < this->rule->getNbHoles(); i++)
+  for (int i = 0; i < this->rule->getNbHoles() / 2; i++)
   {
-    if (i == this->rule->getNbHoles() / 2)
-    {
-      cout << endl;
-    }
+    this->holes[i]->show();
+  }
+  cout << endl;
+  for (int i = this->rule->getNbHoles()-1; i >= this->rule->getNbHoles() / 2; i--)
+  {
     this->holes[i]->show();
   }
   cout << endl;
