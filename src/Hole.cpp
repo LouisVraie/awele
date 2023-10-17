@@ -81,7 +81,7 @@ vector<Seed *> Hole::getSeedsByColor(Color color)
 
   for (Seed *seed : this->seeds)
   {
-    if(seed->getColor() == color)
+    if (seed->getColor() == color)
     {
       seeds.push_back(seed);
     }
@@ -103,7 +103,6 @@ void Hole::addSeed(Seed *seed)
  */
 void Hole::removeSeed(Seed *seed)
 {
-  // Parcourez les graines dans le trou
   for (auto it = seeds.begin(); it != seeds.end(); ++it)
   {
     if (*it == seed)
