@@ -30,6 +30,9 @@ int main()
     awele.play();
   } while (awele.checkGameStatus() == GameStatus::InProgress);
 
+  cout << "<> Partie terminée !!! <>" << endl;
+  awele.show();
+  
   cout << "Awele End" << endl;
 
   return 0;

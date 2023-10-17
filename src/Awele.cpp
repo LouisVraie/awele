@@ -255,7 +255,6 @@ void Awele::moveRed(Player *player)
     targetHole = (targetHole + 1) % this->rule->getNbHoles();
 
     // we skip the chosen hole if the player did more than one turn of the board
-    cout << "Target hole : " << targetHole << " | ChosenHole : " << player->getChosenHole() << endl;
     if (targetHole != player->getChosenHole())
     {
       // Check if i is a valid index for seeds
