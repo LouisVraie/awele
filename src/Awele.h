@@ -18,10 +18,12 @@ namespace Game
   enum GameStatus
   {
     InProgress = 0,
-    Player1Win = 1,
-    Player2Win = 2,
-    Draw = 3,
-    End = 4,
+    Player1WinByScore = 1,
+    Player1WinByStarving = 2,
+    Player2WinByScore = 3,
+    Player2WinByStarving = 4,
+    Draw = 5,
+    End = 6,
   };
 
   class Awele

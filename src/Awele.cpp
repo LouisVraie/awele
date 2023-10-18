@@ -57,7 +57,7 @@ void Awele::play()
   this->turn++;
 
   // Show the board
-  this->show();
+  // this->show();
 
   // Select the player to play
   if (turn % 2 == 1)
@@ -188,7 +188,7 @@ void Awele::askMove(Player *player)
     catch (const exception &)
     {
       chosenHole = -1;
-      cout << player->getName() << " Invalid input. Please enter a valid move." << endl;
+      cout << player->getName() << " Invalid input. Please enter a valid move.." << endl;
     }
 
   } while (endAskCondition);
@@ -352,7 +352,16 @@ void Awele::scoreAfterMove(Player *player)
  */
 bool Awele::isMovePossible(Player *player, int chosenHole, Color chosenColor, bool chosenIsTransparent)
 {
-  return chosenColor != Color::Default && this->holes[chosenHole]->getNbSeedsByColor(chosenColor) > 0 && chosenHole >= 0 && chosenHole <= this->rule->getNbHoles() - 1 && player->isHoleAllowed(chosenHole);
+  if(chosenIsTransparent)
+  {
+    chosenColor = Color::Transparent;
+  }
+  
+  return chosenColor != Color::Default 
+  && this->holes[chosenHole]->getNbSeedsByColor(chosenColor) > 0 
+  && chosenHole >= 0 
+  && chosenHole <= this->rule->getNbHoles() - 1 
+  && player->isHoleAllowed(chosenHole);
 }
 
 /**
@@ -407,16 +416,28 @@ vector<int> Awele::getOpponentHoles(Player *player)
  */
 GameStatus Awele::checkGameStatus()
 {
-  // if player1 won
-  if (this->player1->getScore() >= this->rule->getWinCondition() || this->getSeedsLeft(player2) == 0)
+  // if player1 won by score
+  if (this->player1->getScore() >= this->rule->getWinCondition())
   {
-    return GameStatus::Player1Win;
+    return GameStatus::Player1WinByScore;
   }
 
-  // if player2 won
-  if (this->player2->getScore() >= this->rule->getWinCondition() || this->getSeedsLeft(player1) == 0)
+  // if player1 won by starving
+  if (this->getSeedsLeft(player2) == 0)
   {
-    return GameStatus::Player2Win;
+    return GameStatus::Player1WinByStarving;
+  }
+
+  // if player2 won by score
+  if (this->player2->getScore() >= this->rule->getWinCondition())
+  {
+    return GameStatus::Player2WinByScore;
+  }
+
+  // if player2 won by starving
+  if(this->getSeedsLeft(player1) == 0)
+  {
+    return GameStatus::Player2WinByStarving;
   }
 
   // if draw

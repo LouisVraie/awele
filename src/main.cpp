@@ -34,8 +34,8 @@ int main()
   } while (gameStatus == GameStatus::InProgress);
 
   cout << "<> Partie terminée !!! <>" << endl;
-  cout << "<>    GameStatus : " << gameStatus << "   <>"<< endl;
-  cout << "<> Seeds on board : " << awele.getSeedsLeft() << " <>" << endl;
+  cout << "<> GameStatus : " << gameStatus << endl;
+  cout << "<> Seeds on board : " << awele.getSeedsLeft() << endl;
   awele.show();
   cout << "Awele End" << endl;
 
