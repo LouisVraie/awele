@@ -16,9 +16,6 @@ namespace Game
     string name;
     int score;
     int nbMoves;
-    int chosenHole;
-    Color chosenColor;
-    bool chosenIsTransparent;
 
     int lastHoleIndex;
 
