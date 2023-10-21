@@ -82,6 +82,15 @@ bool Rule::getStarving()
   return this->starving;
 }
 
+void Rule::setDebug(bool debug)
+{
+  this->debug = debug;
+}
+bool Rule::getDebug()
+{
+  return this->debug;
+}
+
 void Rule::setEatWhenNbSeeds(vector<int> eatWhenNbSeeds)
 {
   this->eatWhenNbSeeds = eatWhenNbSeeds;

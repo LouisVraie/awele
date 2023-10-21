@@ -21,6 +21,8 @@ namespace Game
     int endCondition;
     bool starving;
 
+    bool debug;
+
     vector<int> eatWhenNbSeeds;
 
   public:
@@ -45,6 +47,9 @@ namespace Game
     void setStarving(bool starving);
     bool getStarving();
 
+    void setDebug(bool debug);
+    bool getDebug();
+    
     void setEatWhenNbSeeds(vector<int> eatWhenNbSeeds);
     vector<int> getEatWhenNbSeeds();
   };

@@ -85,7 +85,10 @@ string Move::randomMove(Player *player)
     input += "TR";
     break;
   }
-  cout << input << endl;
+  if (this->awele->getRule()->getDebug())
+  {
+    cout << input << endl;
+  }
   return input;
 }
 
@@ -105,7 +108,10 @@ void Move::askMove(Player *player)
   {
     chosenIsTransparent = false;
 
-    cout << player->getName() << " Choose your move : ";
+    if (this->awele->getRule()->getDebug())
+    {
+      cout << player->getName() << " Choose your move : ";
+    }
     // getline(cin, input);
     input = this->randomMove(player);
 
@@ -136,14 +142,20 @@ void Move::askMove(Player *player)
 
         if (endAskCondition = !this->isMovePossible(player, chosenHole, chosenColor, chosenIsTransparent))
         {
-          cout << player->getName() << " Invalid move. Please enter a valid move." << endl;
+          if (this->awele->getRule()->getDebug())
+          {
+            cout << player->getName() << " Invalid move. Please enter a valid move." << endl;
+          }
         }
       }
     }
     catch (const exception &)
     {
       chosenHole = -1;
-      cout << player->getName() << " Invalid input. Please enter a valid move.." << endl;
+      if (this->awele->getRule()->getDebug())
+      {
+        cout << player->getName() << " Invalid input. Please enter a valid move.." << endl;
+      }
     }
 
   } while (endAskCondition);
@@ -292,28 +304,28 @@ vector<Move> Move::getPossibleMoves(Move currentPos, Player *player)
   vector<int> allowedHoles = player->getAllowedHoles();
 
   // for each allowedHoles
-  for(int index : allowedHoles)
+  for (int index : allowedHoles)
   {
     // try blue
-    if(this->isMovePossible(player, index, Color::Blue, false))
+    if (this->isMovePossible(player, index, Color::Blue, false))
     {
       possibleMoves.push_back(Move(this->awele, index, Color::Blue, false));
     }
 
     // try red
-    if(this->isMovePossible(player, index, Color::Red, false))
+    if (this->isMovePossible(player, index, Color::Red, false))
     {
       possibleMoves.push_back(Move(this->awele, index, Color::Red, false));
     }
 
     // try transparent blue
-    if(this->isMovePossible(player, index, Color::Blue, true))
+    if (this->isMovePossible(player, index, Color::Blue, true))
     {
       possibleMoves.push_back(Move(this->awele, index, Color::Blue, true));
     }
 
     // try transparent red
-    if(this->isMovePossible(player, index, Color::Red, true))
+    if (this->isMovePossible(player, index, Color::Red, true))
     {
       possibleMoves.push_back(Move(this->awele, index, Color::Red, true));
     }

@@ -23,6 +23,8 @@ int main()
 
   rule.setStarving(true);
 
+  rule.setDebug(false);
+
   rule.setEatWhenNbSeeds({2, 3});
 
   Awele awele = Awele(&rule);
