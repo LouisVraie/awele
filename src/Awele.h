@@ -18,12 +18,9 @@ namespace Game
   enum GameStatus
   {
     InProgress = 0,
-    Player1WinByScore = 1,
-    Player1WinByStarving = 2,
-    Player2WinByScore = 3,
-    Player2WinByStarving = 4,
-    Draw = 5,
-    End = 6,
+    Player1Won = 1,
+    Player2Won = 2,
+    Draw = 3,
   };
 
   class Awele
@@ -47,9 +44,11 @@ namespace Game
     void moveBlue(Player *player);
     void moveRed(Player *player);
     void scoreAfterMove(Player *player);
+    void checkStarving(Player *player);
     bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
     int getSeedsLeft();
     int getSeedsLeft(Player *player);
+    Player *getOpponent(Player *player);
     vector<int> getOpponentHoles(Player *player);
     GameStatus checkGameStatus();
   };

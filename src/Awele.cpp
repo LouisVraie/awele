@@ -77,6 +77,9 @@ void Awele::play()
 
   // Update the score after the move
   this->scoreAfterMove(currentPlayer);
+
+  // Check if the opponent is starved
+  this->checkStarving(currentPlayer);
 }
 
 /**
@@ -347,21 +350,47 @@ void Awele::scoreAfterMove(Player *player)
 }
 
 /**
+ * @brief Check if there is starving and add score to the given player
+ */
+void Awele::checkStarving(Player *player)
+{
+  if (this->rule->getStarving())
+  {
+    // Get the opponent player
+    Player *opponent = this->getOpponent(player);
+
+    // Get the number of seeds left of the opponent
+    int opponentNbSeeds = this->getSeedsLeft(opponent);
+
+    // If the opponent is starved
+    if (opponentNbSeeds == 0)
+    {
+      cout << opponent->getName() << " is starved !" << endl;
+
+      // We give all the seeds left to the given player
+      player->addScore(this->getSeedsLeft(player));
+
+      // We remove all seeds from their holes
+      for(int i = 0; i < this->rule->getNbHoles(); i++)
+      {
+        this->holes[i]->removeAllSeeds();
+      }
+    }
+  }
+}
+
+/**
  * @brief Check if the given move is possible for the given player
  * @return
  */
 bool Awele::isMovePossible(Player *player, int chosenHole, Color chosenColor, bool chosenIsTransparent)
 {
-  if(chosenIsTransparent)
+  if (chosenIsTransparent)
   {
     chosenColor = Color::Transparent;
   }
-  
-  return chosenColor != Color::Default 
-  && this->holes[chosenHole]->getNbSeedsByColor(chosenColor) > 0 
-  && chosenHole >= 0 
-  && chosenHole <= this->rule->getNbHoles() - 1 
-  && player->isHoleAllowed(chosenHole);
+
+  return chosenColor != Color::Default && this->holes[chosenHole]->getNbSeedsByColor(chosenColor) > 0 && chosenHole >= 0 && chosenHole <= this->rule->getNbHoles() - 1 && player->isHoleAllowed(chosenHole);
 }
 
 /**
@@ -397,17 +426,26 @@ int Awele::getSeedsLeft(Player *player)
 }
 
 /**
+ * @brief Get the opponent player from the given player
+ * @return The opponent player
+ */
+Player *Awele::getOpponent(Player *player)
+{
+  if (player == this->player1)
+  {
+    return player2;
+  }
+
+  return player1;
+}
+
+/**
  * @brief Get the opponent holes indexs
  * @return Pointer of the allowedHoles of the opponent player
  */
 vector<int> Awele::getOpponentHoles(Player *player)
 {
-  if (player == this->player1)
-  {
-    return player2->getAllowedHoles();
-  }
-
-  return player1->getAllowedHoles();
+  return this->getOpponent(player)->getAllowedHoles();
 }
 
 /**
@@ -419,37 +457,19 @@ GameStatus Awele::checkGameStatus()
   // if player1 won by score
   if (this->player1->getScore() >= this->rule->getWinCondition())
   {
-    return GameStatus::Player1WinByScore;
-  }
-
-  // if player1 won by starving
-  if (this->getSeedsLeft(player2) == 0)
-  {
-    return GameStatus::Player1WinByStarving;
+    return GameStatus::Player1Won;
   }
 
   // if player2 won by score
   if (this->player2->getScore() >= this->rule->getWinCondition())
   {
-    return GameStatus::Player2WinByScore;
-  }
-
-  // if player2 won by starving
-  if(this->getSeedsLeft(player1) == 0)
-  {
-    return GameStatus::Player2WinByStarving;
+    return GameStatus::Player2Won;
   }
 
   // if draw
   if (this->player1->getScore() == this->rule->getDrawCondition() && this->player2->getScore() == this->rule->getDrawCondition())
   {
     return GameStatus::Draw;
-  }
-
-  // if endCondition
-  if (this->getSeedsLeft() < this->rule->getEndCondition())
-  {
-    return GameStatus::End;
   }
 
   return GameStatus::InProgress;
