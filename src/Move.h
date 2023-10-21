@@ -9,7 +9,6 @@ using namespace std;
 
 namespace Game
 {
-
   class Move
   {
   private:
@@ -33,6 +32,13 @@ namespace Game
     bool getIsTransparent();
 
     string getNextMove();
+
+    string randomMove(Player *player);
+    void askMove(Player *player);
+    void makeMove(Player *player);
+    void moveBlue(Player *player);
+    void moveRed(Player *player);
+    bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
 
     vector<Move> getPossibleMoves(Move currentPos, Player *player);
 

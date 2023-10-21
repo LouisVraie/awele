@@ -36,16 +36,14 @@ namespace Game
 
   public:
     Awele(Rule *rule);
+
+    Rule *getRule();
+    vector<Hole *> getHoles();
+
     void play();
     void show();
-    string randomMove(Player *player);
-    void askMove(Player *player);
-    void makeMove(Player *player);
-    void moveBlue(Player *player);
-    void moveRed(Player *player);
     void scoreAfterMove(Player *player);
     void checkStarving(Player *player);
-    bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
     int getSeedsLeft();
     int getSeedsLeft(Player *player);
     Player *getOpponent(Player *player);
