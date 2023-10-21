@@ -91,7 +91,9 @@ void Awele::play()
   Move move = Move(this);
 
   // Ask the player to play
-  move.askMove(currentPlayer);
+  // move.askMove(currentPlayer);
+  move.decisionAlphaBeta(move, currentPlayer, 5);
+  cout << "Best next move : "<< move.getNextMove() << endl;
 
   // Make the move
   move.makeMove(currentPlayer);

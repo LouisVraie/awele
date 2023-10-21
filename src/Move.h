@@ -12,8 +12,6 @@ namespace Game
   class Move
   {
   private:
-    const int maxValue = numeric_limits<int>::infinity();
-
     Awele *awele;
 
     int hole;
@@ -24,6 +22,7 @@ namespace Game
     Move(Awele *awele);
     Move(Awele *awele, int hole, Color color, bool isTransparent);
 
+    void showMove();
     void showMoves(vector<Move> moves);
 
     void setHole(int hole);

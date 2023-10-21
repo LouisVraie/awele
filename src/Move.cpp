@@ -22,15 +22,21 @@ Move::Move(Awele *awele, int hole, Color color, bool isTransparent)
 }
 
 /**
+ * @brief Show Move info
+ */
+void Move::showMove()
+{
+  cout << this->getNextMove();
+}
+
+/**
  * @brief Show Moves infos
  */
-void showMoves(vector<Move> moves)
+void Move::showMoves(vector<Move> moves)
 {
-  for (Move m : moves)
+  for (Move move : moves)
   {
-    cout << m.getHole() + 1;
-    cout << (m.getIsTransparent() ? "T" : "");
-    cout << getLetterFromColor(m.getColor());
+    move.showMove();
     cout << " | ";
   }
   cout << endl;
@@ -64,11 +70,14 @@ bool Move::getIsTransparent()
 }
 
 /**
- * @return The best next move for the player
+ * @brief Get the best next move
+ * @return String representing the move
  */
 string Move::getNextMove()
 {
-  return "";
+  return to_string(this->hole + 1) 
+  + (this->isTransparent ? "T" : "")
+  + getLetterFromColor(this->color);
 }
 
 /**
@@ -355,19 +364,19 @@ vector<Move> Move::getPossibleMoves(Move currentPos, Player *player)
  */
 int Move::evaluate(Move position)
 {
-  return 0;
+  return 1;
 }
 
 void Move::decisionAlphaBeta(Move currentPos, Player *player, int depth)
 {
   // Decide the best move to play for J in the position currentPos
-  int alpha = -this->maxValue;
-  int beta = this->maxValue;
+  int val, alpha = -numeric_limits<int>::max();
+  int beta = numeric_limits<int>::max();
   vector<Move> possibleMoves = getPossibleMoves(currentPos, player);
 
   for (Move move : possibleMoves)
   {
-    int val = alphaBetaValue(move, player, alpha, beta, false, depth);
+    val = alphaBetaValue(move, player, alpha, beta, false, depth);
     if (val > alpha)
     {
       this->hole = move.getHole();
@@ -376,6 +385,11 @@ void Move::decisionAlphaBeta(Move currentPos, Player *player, int depth)
 
       alpha = val;
     }
+  }
+  if (this->awele->getRule()->getDebug())
+  {
+    this->showMove();
+    cout << endl;
   }
 }
 
