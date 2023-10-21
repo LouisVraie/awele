@@ -52,33 +52,6 @@ int Player::getNbMoves()
   return this->nbMoves;
 }
 
-void Player::setChosenHole(int chosenHole)
-{
-  this->chosenHole = chosenHole;
-}
-int Player::getChosenHole()
-{
-  return this->chosenHole;
-}
-
-void Player::setChosenColor(Color chosenColor)
-{
-  this->chosenColor = chosenColor;
-}
-Color Player::getChosenColor()
-{
-  return this->chosenColor;
-}
-
-void Player::setChosenIsTransparent(bool chosenIsTransparent)
-{
-  this->chosenIsTransparent = chosenIsTransparent;
-}
-bool Player::getChosenIsTransparent()
-{
-  return this->chosenIsTransparent;
-}
-
 void Player::setLastHoleIndex(int lastHoleIndex)
 {
   this->lastHoleIndex = lastHoleIndex;

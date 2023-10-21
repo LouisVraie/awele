@@ -179,9 +179,9 @@ void Move::askMove(Player *player)
   player->setNbMoves(player->getNbMoves() + 1);
 
   // Set the chosen move infos
-  player->setChosenHole(chosenHole);
-  player->setChosenColor(chosenColor);
-  player->setChosenIsTransparent(chosenIsTransparent);
+  this->setHole(chosenHole);
+  this->setColor(chosenColor);
+  this->setIsTransparent(chosenIsTransparent);
 }
 
 /**
@@ -190,12 +190,12 @@ void Move::askMove(Player *player)
 void Move::makeMove(Player *player)
 {
   // if blue
-  if (player->getChosenColor() == Color::Blue)
+  if (this->getColor() == Color::Blue)
   {
     this->moveBlue(player);
   }
   // if red
-  if (player->getChosenColor() == Color::Red)
+  if (this->getColor() == Color::Red)
   {
     this->moveRed(player);
   }
@@ -213,21 +213,21 @@ void Move::moveBlue(Player *player)
   vector<int> opponentHoles = this->awele->getOpponentHoles(player);
 
   // if transparent
-  if (player->getChosenIsTransparent())
+  if (this->getIsTransparent())
   {
     // get transparent seeds of the chosen hole like blue seeds
-    seeds = this->awele->getHoles()[player->getChosenHole()]->getSeedsByColor(Color::Transparent);
+    seeds = this->awele->getHoles()[this->getHole()]->getSeedsByColor(Color::Transparent);
   }
   else
   {
     // get blue seeds of the chosen hole
-    seeds = this->awele->getHoles()[player->getChosenHole()]->getSeedsByColor(Color::Blue);
+    seeds = this->awele->getHoles()[this->getHole()]->getSeedsByColor(Color::Blue);
   }
 
   // foreach seed
   for (int i = 0; i < seeds.size(); i++)
   {
-    int chosenHole = player->getChosenHole() % 2 == 1 ? player->getChosenHole() + 1 : player->getChosenHole();
+    int chosenHole = this->getHole() % 2 == 1 ? this->getHole() + 1 : this->getHole();
 
     int targetHoleIndex = (chosenHole / 2 + i) % opponentHoles.size();
     targetHole = opponentHoles[targetHoleIndex];
@@ -236,7 +236,7 @@ void Move::moveBlue(Player *player)
     this->awele->getHoles()[targetHole]->addSeed(seeds[i]);
 
     // We remove the seed of the origin hole
-    this->awele->getHoles()[player->getChosenHole()]->removeSeed(seeds[i]);
+    this->awele->getHoles()[this->getHole()]->removeSeed(seeds[i]);
   }
 
   player->setLastHoleIndex(targetHole);
@@ -248,12 +248,12 @@ void Move::moveBlue(Player *player)
 void Move::moveRed(Player *player)
 {
   vector<Seed *> seeds;
-  int targetHole = player->getChosenHole();
+  int targetHole = this->getHole();
   int i = 0;
   Color color;
 
   // if transparent
-  if (player->getChosenIsTransparent())
+  if (this->getIsTransparent())
   {
     color = Color::Transparent;
   }
@@ -263,15 +263,15 @@ void Move::moveRed(Player *player)
   }
 
   // get seeds of the chosen hole
-  seeds = this->awele->getHoles()[player->getChosenHole()]->getSeedsByColor(color);
+  seeds = this->awele->getHoles()[this->getHole()]->getSeedsByColor(color);
 
   // while the hole got seeds
-  while (this->awele->getHoles()[player->getChosenHole()]->getNbSeedsByColor(color) != 0)
+  while (this->awele->getHoles()[this->getHole()]->getNbSeedsByColor(color) != 0)
   {
     targetHole = (targetHole + 1) % this->awele->getRule()->getNbHoles();
 
     // we skip the chosen hole if the player did more than one turn of the board
-    if (targetHole != player->getChosenHole())
+    if (targetHole != this->getHole())
     {
       // Check if i is a valid index for seeds
       if (i < seeds.size())
@@ -280,7 +280,7 @@ void Move::moveRed(Player *player)
         this->awele->getHoles()[targetHole]->addSeed(seeds[i]);
 
         // We remove the seed of the origin hole
-        this->awele->getHoles()[player->getChosenHole()]->removeSeed(seeds[i]);
+        this->awele->getHoles()[this->getHole()]->removeSeed(seeds[i]);
 
         i++;
       }

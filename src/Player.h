@@ -39,13 +39,6 @@ namespace Game
     void setNbMoves(int nbMoves);
     int getNbMoves();
 
-    void setChosenHole(int chosenHole);
-    int getChosenHole();
-    void setChosenColor(Color chosenColor);
-    Color getChosenColor();
-    void setChosenIsTransparent(bool chosenIsTransparent);
-    bool getChosenIsTransparent();
-
     void setLastHoleIndex(int lastHoleIndex);
     int getLastHoleIndex();
 
