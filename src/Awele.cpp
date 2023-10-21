@@ -268,5 +268,28 @@ GameStatus Awele::checkGameStatus()
     return GameStatus::Draw;
   }
 
+  // if end
+  if(this->getSeedsLeft() < this->rule->getEndCondition())
+  {
+    cout << "<> Less than " << this->rule->getEndCondition() << " seed(s) left on the board !" << endl;
+    // if player1 won by score
+    if (this->player1->getScore() > this->player2->getScore())
+    {
+      return GameStatus::Player1Won;
+    }
+
+    // if player2 won by score
+    if (this->player2->getScore() > this->player1->getScore())
+    {
+      return GameStatus::Player2Won;
+    }
+
+    // if player1 and player2 got the same score
+    if (this->player1->getScore() == this->player2->getScore())
+    {
+      return GameStatus::Draw;
+    }
+  }
+
   return GameStatus::InProgress;
 }
