@@ -43,7 +43,7 @@ namespace Game
 
     vector<Move> getPossibleMoves(Move currentPos, Player *player);
 
-    int evaluate(Move position);
+    int evaluate();
     void decisionAlphaBeta(Move currentPos, Player *player, int pmax);
     int alphaBetaValue(Move currentPos, Player *player, int alpha, int beta, bool isMax, int pmax);
   };

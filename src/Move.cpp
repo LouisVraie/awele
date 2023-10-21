@@ -362,7 +362,7 @@ vector<Move> Move::getPossibleMoves(Move currentPos, Player *player)
  * @brief Evaluate a move position
  * @return An integer which symbolize the move result
  */
-int Move::evaluate(Move position)
+int Move::evaluate()
 {
   return 1;
 }
@@ -410,7 +410,7 @@ int Move::alphaBetaValue(Move currentPos, Player *player, int alpha, int beta, b
   // }
   if (depth == 0)
   {
-    return evaluate(currentPos);
+    return currentPos.evaluate();
   }
 
   // Max
