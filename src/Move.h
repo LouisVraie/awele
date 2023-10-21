@@ -24,6 +24,8 @@ namespace Game
     Move(Awele *awele);
     Move(Awele *awele, int hole, Color color, bool isTransparent);
 
+    void showMoves(vector<Move> moves);
+
     void setHole(int hole);
     int getHole();
     void setColor(Color color);

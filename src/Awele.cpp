@@ -269,7 +269,7 @@ GameStatus Awele::checkGameStatus()
   }
 
   // if end
-  if(this->getSeedsLeft() < this->rule->getEndCondition())
+  if (this->getSeedsLeft() < this->rule->getEndCondition())
   {
     cout << "<> Less than " << this->rule->getEndCondition() << " seed(s) left on the board !" << endl;
     // if player1 won by score

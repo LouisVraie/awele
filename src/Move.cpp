@@ -21,6 +21,21 @@ Move::Move(Awele *awele, int hole, Color color, bool isTransparent)
   this->isTransparent = isTransparent;
 }
 
+/**
+ * @brief Show Moves infos
+ */
+void showMoves(vector<Move> moves)
+{
+  for (Move m : moves)
+  {
+    cout << m.getHole() + 1;
+    cout << (m.getIsTransparent() ? "T" : "");
+    cout << getLetterFromColor(m.getColor());
+    cout << " | ";
+  }
+  cout << endl;
+}
+
 void Move::setHole(int hole)
 {
   this->hole = hole;
@@ -348,7 +363,9 @@ void Move::decisionAlphaBeta(Move currentPos, Player *player, int depth)
   // Decide the best move to play for J in the position currentPos
   int alpha = -this->maxValue;
   int beta = this->maxValue;
-  for (Move move : getPossibleMoves(currentPos, player))
+  vector<Move> possibleMoves = getPossibleMoves(currentPos, player);
+
+  for (Move move : possibleMoves)
   {
     int val = alphaBetaValue(move, player, alpha, beta, false, depth);
     if (val > alpha)

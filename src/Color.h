@@ -38,6 +38,21 @@ namespace Game
       return Color::Default;
     }
   }
+
+  inline char getLetterFromColor(Color color)
+  {
+    switch (color)
+    {
+    case Color::Blue:
+      return 'B';
+      break;
+    case Color::Red:
+      return 'R';
+      break;
+    default:
+      return ' ';
+    }
+  }
 }
 
 #endif
