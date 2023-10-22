@@ -3,12 +3,26 @@
 using namespace Game;
 
 /**
- * Constructor
+ * @brief Constructor
  */
 Player::Player()
 {
   this->score = 0;
   this->nbMoves = 0;
+}
+
+/**
+ * @brief Copy an instance
+ */
+Player::Player(const Player &player)
+{
+  this->name = player.name;
+  this->score = player.score;
+  this->nbMoves = player.nbMoves;
+
+  this->lastHoleIndex = player.lastHoleIndex;
+
+  this->allowedHoles = player.allowedHoles;
 }
 
 /**

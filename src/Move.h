@@ -23,6 +23,8 @@ namespace Game
   public:
     Move(Awele *awele);
     Move(Awele *awele, int hole, Color color, bool isTransparent);
+    Move(const Move &move);
+    ~Move();
 
     void showMove();
     void showMoves(vector<Move> moves);

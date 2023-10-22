@@ -34,14 +34,18 @@ namespace Game
     vector<Hole *> holes;
     int turn;
 
+    bool isCopied;
+
   public:
     Awele(Rule *rule);
+    Awele(const Awele &awele);
 
     Rule *getRule();
     Player *getPlayer1();
     Player *getPlayer2();
     vector<Hole *> getHoles();
     int getTurn();
+    bool getIsCopied();
 
     void play();
     void show();

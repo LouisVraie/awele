@@ -23,6 +23,7 @@ namespace Game
 
   public:
     Player();
+    Player(const Player &player);
 
     void show();
 

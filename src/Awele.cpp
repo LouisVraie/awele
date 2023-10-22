@@ -4,7 +4,7 @@
 using namespace Game;
 
 /**
- * Constructor
+ * @brief Constructor
  */
 Awele::Awele(Rule *rule)
 {
@@ -45,6 +45,29 @@ Awele::Awele(Rule *rule)
     Hole *hole = new Hole(this->rule->getNbBlueSeeds(), this->rule->getNbRedSeeds(), this->rule->getNbTransparentSeeds());
     this->holes.push_back(hole);
   }
+
+  this->isCopied = false;
+}
+
+/**
+ * @brief Copy an instance
+ */
+Awele::Awele(const Awele &awele)
+{
+  this->rule = awele.rule;
+
+  this->player1 = new Player(*(awele.player1));
+  this->player2 = new Player(*(awele.player2));  
+
+  // Make a copy of Holes
+  for (Hole* hole : awele.holes) {
+    Hole* clonedHole = new Hole(*hole);
+    this->holes.push_back(clonedHole);
+  }
+
+  this->turn = awele.turn;
+
+  this->isCopied = true;
 }
 
 /**
@@ -90,6 +113,15 @@ vector<Hole *> Awele::getHoles()
 int Awele::getTurn()
 {
   return this->turn;
+}
+
+/**
+ * @brief Get Awele isCopied property
+ * @return A bool to know if it's a copy or not
+ */
+bool Awele::getIsCopied()
+{
+  return this->isCopied;
 }
 
 /**

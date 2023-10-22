@@ -14,6 +14,8 @@ namespace Game
 
   public:
     Seed(Color color);
+    Seed(const Seed &seed);
+
     Color getColor();
   };
 }

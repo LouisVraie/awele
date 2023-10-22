@@ -3,7 +3,7 @@
 using namespace Game;
 
 /**
- * Constructor
+ * @brief Constructor
  */
 Hole::Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds)
 {
@@ -26,6 +26,18 @@ Hole::Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds)
   {
     Seed *transparentSeed = new Seed(Color::Transparent);
     this->seeds.push_back(transparentSeed);
+  }
+}
+
+/**
+ * @brief Copy an instance
+ */
+Hole::Hole(const Hole &hole)
+{
+  // Make a copy of seeds
+  for (Seed* seed : hole.seeds) {
+    Seed* clonedSeed = new Seed(*seed);
+    this->seeds.push_back(clonedSeed);
   }
 }
 

@@ -22,6 +22,28 @@ Move::Move(Awele *awele, int hole, Color color, bool isTransparent)
 }
 
 /**
+ * @brief Copy an instance
+ */
+Move::Move(const Move &move)
+{
+  this->awele = new Awele(*(move.awele));
+  this->hole = move.hole;
+  this->color = move.color;
+  this->isTransparent = move.isTransparent;
+}
+
+/**
+ * @brief Destructor
+ */
+Move::~Move()
+{
+  if(this->awele->getIsCopied())
+  {
+    delete this->awele;
+  }
+}
+
+/**
  * @brief Show Move info
  */
 void Move::showMove()
@@ -388,6 +410,12 @@ int Move::evaluate(Player *player)
   }
   else
   {
+    // check how many points the move can give
+    Move move = *this;
+    cout << "-------------------------------------------------" << endl;
+    this->awele->getPlayer1()->addScore(1);
+    cout << "Get turn origin  : " << this->awele->getPlayer1()->getScore() << endl;
+    cout << "Get turn copy : " << move.awele->getPlayer1()->getScore() << endl;
     return 1;
   }
 }
