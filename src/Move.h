@@ -3,9 +3,11 @@
 
 #include <string>
 #include <limits>
+#include <chrono>
 #include "Awele.h"
 
 using namespace std;
+using namespace chrono;
 
 namespace Game
 {
@@ -34,6 +36,7 @@ namespace Game
 
     string getNextMove();
 
+    void setRandomMove(Player *player);
     string randomMove(Player *player);
     void askMove(Player *player);
     void makeMove(Player *player);
@@ -43,7 +46,7 @@ namespace Game
 
     vector<Move> getPossibleMoves(Move currentPos, Player *player);
 
-    int evaluate();
+    int evaluate(Player *player);
     void decisionAlphaBeta(Move currentPos, Player *player, int pmax);
     int alphaBetaValue(Move currentPos, Player *player, int alpha, int beta, bool isMax, int pmax);
   };

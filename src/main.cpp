@@ -23,7 +23,7 @@ int main()
 
   rule.setStarving(true);
 
-  rule.setDebug(false);
+  rule.setDebug(true);
 
   rule.setEatWhenNbSeeds({2, 3});
 
@@ -35,7 +35,7 @@ int main()
     gameStatus = awele.checkGameStatus();
   } while (gameStatus == GameStatus::InProgress);
 
-  cout << "<> Partie terminée !!! <>" << endl;
+  cout << "<> Game finished !!!" << endl;
   cout << "<> GameStatus : " << gameStatus << endl;
   cout << "<> Seeds on board : " << awele.getSeedsLeft() << endl;
   awele.show();

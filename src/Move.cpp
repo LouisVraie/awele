@@ -75,45 +75,53 @@ bool Move::getIsTransparent()
  */
 string Move::getNextMove()
 {
-  return to_string(this->hole + 1) 
-  + (this->isTransparent ? "T" : "")
-  + getLetterFromColor(this->color);
+  return to_string(this->hole + 1) + (this->isTransparent ? "T" : "") + getLetterFromColor(this->color);
+}
+
+/**
+ * @brief Set a random input for the given player
+ */
+void Move::setRandomMove(Player *player)
+{
+  // Get a random hole allowed for the player
+  int holeIndex = rand() % (this->awele->getRule()->getNbHoles() / 2);
+  int hole = player->getAllowedHoles()[holeIndex];
+
+  // Get a random isTransparent
+  bool isTransparent = rand() % 1;
+
+  // Get a random color
+  Color color;
+
+  int randColor = rand() % 2 + 1;
+
+  switch (randColor)
+  {
+  case 1:
+    color = Color::Blue;
+    break;
+  case 2:
+    color = Color::Red;
+    break;
+  default:
+    color = Color::Default;
+  }
+
+  // Set all the result values
+  this->setHole(hole);
+  this->setColor(color);
+  this->setIsTransparent(isTransparent);
 }
 
 /**
  * @brief Get a random input for the given player
- * @return
+ * @return The string representing the move
  */
 string Move::randomMove(Player *player)
 {
-  string input;
-  int hole = rand() % (this->awele->getRule()->getNbHoles() / 2);
+  this->setRandomMove(player);
 
-  int number = player->getAllowedHoles()[hole] + 1;
-  input = to_string(number);
-
-  int letter = rand() % 4 + 1;
-
-  switch (letter)
-  {
-  case 1:
-    input += "B";
-    break;
-  case 2:
-    input += "R";
-    break;
-  case 3:
-    input += "TB";
-    break;
-  case 4:
-    input += "TR";
-    break;
-  }
-  if (this->awele->getRule()->getDebug())
-  {
-    cout << input << endl;
-  }
-  return input;
+  return this->getNextMove();
 }
 
 /**
@@ -136,8 +144,17 @@ void Move::askMove(Player *player)
     {
       cout << player->getName() << " Choose your move : ";
     }
-    // getline(cin, input);
-    input = this->randomMove(player);
+
+    // Ask input following the player
+    if (player == this->awele->getPlayer1())
+    {
+      getline(cin, input);
+    }
+    else
+    {
+      input = this->randomMove(player);
+      cout << input << endl;
+    }
 
     try
     {
@@ -362,13 +379,24 @@ vector<Move> Move::getPossibleMoves(Move currentPos, Player *player)
  * @brief Evaluate a move position
  * @return An integer which symbolize the move result
  */
-int Move::evaluate()
+int Move::evaluate(Player *player)
 {
-  return 1;
+  // if it is the first turn
+  if (this->awele->getTurn() == 1)
+  {
+    return rand() % numeric_limits<int>::max();
+  }
+  else
+  {
+    return 1;
+  }
 }
 
 void Move::decisionAlphaBeta(Move currentPos, Player *player, int depth)
 {
+  // Get starting time
+  auto startTime = high_resolution_clock::now();
+
   // Decide the best move to play for J in the position currentPos
   int val, alpha = -numeric_limits<int>::max();
   int beta = numeric_limits<int>::max();
@@ -386,11 +414,15 @@ void Move::decisionAlphaBeta(Move currentPos, Player *player, int depth)
       alpha = val;
     }
   }
-  if (this->awele->getRule()->getDebug())
-  {
-    this->showMove();
-    cout << endl;
-  }
+
+  // Get ending time
+  auto endTime = high_resolution_clock::now();
+
+  auto duration = duration_cast<milliseconds>(endTime - startTime);
+
+  cout << "AlphaBeta execution time : " << duration.count() << "ms" << endl;
+  cout << player->getName() << " Best next move : " << this->getNextMove() << endl;
+
 }
 
 int Move::alphaBetaValue(Move currentPos, Player *player, int alpha, int beta, bool isMax, int depth)
@@ -410,7 +442,7 @@ int Move::alphaBetaValue(Move currentPos, Player *player, int alpha, int beta, b
   // }
   if (depth == 0)
   {
-    return currentPos.evaluate();
+    return currentPos.evaluate(player);
   }
 
   // Max

@@ -38,7 +38,10 @@ namespace Game
     Awele(Rule *rule);
 
     Rule *getRule();
+    Player *getPlayer1();
+    Player *getPlayer2();
     vector<Hole *> getHoles();
+    int getTurn();
 
     void play();
     void show();
@@ -46,6 +49,7 @@ namespace Game
     void checkStarving(Player *player);
     int getSeedsLeft();
     int getSeedsLeft(Player *player);
+    int getDynamicDepth(Player *player);
     Player *getOpponent(Player *player);
     vector<int> getOpponentHoles(Player *player);
     GameStatus checkGameStatus();

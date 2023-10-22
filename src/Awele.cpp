@@ -57,12 +57,39 @@ Rule *Awele::getRule()
 }
 
 /**
+ * @brief Get Player1
+ * @return The player1 pointer
+ */
+Player *Awele::getPlayer1()
+{
+  return this->player1;
+}
+
+/**
+ * @brief Get Player2
+ * @return The player2 pointer
+ */
+Player *Awele::getPlayer2()
+{
+  return this->player2;
+}
+
+/**
  * @brief Get Awele holes
  * @return A vector of Hole pointers
  */
 vector<Hole *> Awele::getHoles()
 {
   return this->holes;
+}
+
+/**
+ * @brief Get Awele turn
+ * @return An integer of turn
+ */
+int Awele::getTurn()
+{
+  return this->turn;
 }
 
 /**
@@ -89,11 +116,14 @@ void Awele::play()
   }
 
   Move move = Move(this);
+  
+  // Get corresponding depth
+  int depth = this->getDynamicDepth(currentPlayer);
 
   // Ask the player to play
-  // move.askMove(currentPlayer);
-  move.decisionAlphaBeta(move, currentPlayer, 5);
-  cout << "Best next move : "<< move.getNextMove() << endl;
+  move.decisionAlphaBeta(move, currentPlayer, depth);
+
+  move.askMove(currentPlayer);
 
   // Make the move
   move.makeMove(currentPlayer);
@@ -221,6 +251,51 @@ int Awele::getSeedsLeft(Player *player)
   }
 
   return result;
+}
+
+/**
+ * @brief Get the optimal depth for the current turn
+ * @return An integer which represent the depth
+ */
+int Awele::getDynamicDepth(Player *player)
+{
+  if (this->turn == 1)
+  {
+    return 1;
+  }
+
+  int seedsLeft = this->getSeedsLeft();
+
+  if (seedsLeft >= 70)
+  {
+    return 5;
+  }
+  if (seedsLeft >= 60)
+  {
+    return 6;
+  }
+  if (seedsLeft >= 50)
+  {
+    return 7;
+  }
+  if (seedsLeft >= 40)
+  {
+    return 8;
+  }
+  if (seedsLeft >= 30)
+  {
+    return 9;
+  }
+  if (seedsLeft >= 20)
+  {
+    return 10;
+  }
+  if (seedsLeft >= 10)
+  {
+    return 11;
+  }
+
+  return 1;
 }
 
 /**
