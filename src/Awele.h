@@ -39,6 +39,7 @@ namespace Game
   public:
     Awele(Rule *rule);
     Awele(const Awele &awele);
+    ~Awele();
 
     Rule *getRule();
     Player *getPlayer1();

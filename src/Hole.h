@@ -17,7 +17,8 @@ namespace Game
   public:
     Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds);
     Hole(const Hole &hole);
-
+    ~Hole();
+    
     int getNbSeeds();
     int getNbSeedsByColor(Color color);
     vector<Seed *> getSeedsByColor(Color color);

@@ -57,17 +57,32 @@ Awele::Awele(const Awele &awele)
   this->rule = awele.rule;
 
   this->player1 = new Player(*(awele.player1));
-  this->player2 = new Player(*(awele.player2));  
+  this->player2 = new Player(*(awele.player2));
 
   // Make a copy of Holes
-  for (Hole* hole : awele.holes) {
-    Hole* clonedHole = new Hole(*hole);
+  for (Hole *hole : awele.holes)
+  {
+    Hole *clonedHole = new Hole(*hole);
     this->holes.push_back(clonedHole);
   }
 
   this->turn = awele.turn;
 
   this->isCopied = true;
+}
+
+/**
+ * @brief Destructor
+ */
+Awele::~Awele()
+{
+  delete this->player1;
+  delete this->player2;
+
+  for (Hole *hole : this->holes)
+  {
+    delete hole;
+  }
 }
 
 /**
@@ -135,7 +150,7 @@ void Awele::play()
   this->turn++;
 
   // Show the board
-  // this->show();
+  this->show();
 
   // Select the player to play
   if (turn % 2 == 1)
@@ -148,12 +163,12 @@ void Awele::play()
   }
 
   Move move = Move(this);
-  
+
   // Get corresponding depth
   int depth = this->getDynamicDepth(currentPlayer);
 
   // Ask the player to play
-  move.decisionAlphaBeta(move, currentPlayer, depth);
+  move.decisionAlphaBeta(move, currentPlayer, 1);
 
   move.askMove(currentPlayer);
 
@@ -174,6 +189,7 @@ void Awele::show()
 {
   this->player1->show();
   this->player2->show();
+  cout << "Seeds left : " << this->getSeedsLeft() << endl;
 
   for (int i = 0; i < this->rule->getNbHoles() / 2; i++)
   {

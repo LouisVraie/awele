@@ -37,7 +37,7 @@ Move::Move(const Move &move)
  */
 Move::~Move()
 {
-  if(this->awele->getIsCopied())
+  if (this->awele->getIsCopied())
   {
     delete this->awele;
   }
@@ -411,12 +411,36 @@ int Move::evaluate(Player *player)
   else
   {
     // check how many points the move can give
+
+    // Make a copy of move to perform the move wothout affecting the real board
     Move move = *this;
-    cout << "-------------------------------------------------" << endl;
-    this->awele->getPlayer1()->addScore(1);
-    cout << "Get turn origin  : " << this->awele->getPlayer1()->getScore() << endl;
-    cout << "Get turn copy : " << move.awele->getPlayer1()->getScore() << endl;
-    return 1;
+
+    // Perform the move
+    move.makeMove(player);
+    // Do the scoring
+    move.awele->scoreAfterMove(player);
+
+    int player1NewScore = move.awele->getPlayer1()->getScore();
+    int player2NewScore = move.awele->getPlayer2()->getScore();
+
+    int player1OldScore = this->awele->getPlayer1()->getScore();
+    int player2OldScore = this->awele->getPlayer2()->getScore();
+
+    // cout << "Copying awele : " << &move.awele << " | Original awele : " << &this->awele << endl;
+    // cout << "P1 new nbMoves : " << player1NewScore << " | P2 new : " << player2NewScore << endl;
+    // if the player1 gain points
+    if (player1NewScore > player1OldScore)
+    {
+      return player1NewScore - player1OldScore;
+    }
+    // if the player2 gain points
+    if (player2NewScore > player2OldScore)
+    {
+      return -(player2NewScore - player2OldScore);
+    }
+
+    // If nothing as changed
+    return 0;
   }
 }
 
@@ -450,7 +474,6 @@ void Move::decisionAlphaBeta(Move currentPos, Player *player, int depth)
 
   cout << "AlphaBeta execution time : " << duration.count() << "ms" << endl;
   cout << player->getName() << " Best next move : " << this->getNextMove() << endl;
-
 }
 
 int Move::alphaBetaValue(Move currentPos, Player *player, int alpha, int beta, bool isMax, int depth)

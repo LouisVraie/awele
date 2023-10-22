@@ -42,6 +42,16 @@ Hole::Hole(const Hole &hole)
 }
 
 /**
+ * @brief Destructor
+ */
+Hole::~Hole()
+{
+  for (Seed* seed : this->seeds) {
+    delete seed;
+  }
+}
+
+/**
  * @return The number of seeds of the current Hole
  */
 int Hole::getNbSeeds()
