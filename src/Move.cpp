@@ -15,7 +15,7 @@ Move::Move(Awele *awele)
  */
 Move::Move(Awele *awele, int hole, Color color, bool isTransparent)
 {
-  this->awele = awele;
+  this->awele = new Awele(*(awele));
   this->hole = hole;
   this->color = color;
   this->isTransparent = isTransparent;
@@ -416,11 +416,12 @@ int Move::evaluate(Player *player)
     Move *move = new Move(*this);
     Player *copiedPlayer;
 
-    if(player == this->awele->getPlayer1())
+    if (player == this->awele->getPlayer1())
     {
       copiedPlayer = this->awele->getPlayer1();
     }
-    else{
+    else
+    {
       copiedPlayer = this->awele->getPlayer2();
     }
 
@@ -435,11 +436,6 @@ int Move::evaluate(Player *player)
     int player1OldScore = this->awele->getPlayer1()->getScore();
     int player2OldScore = this->awele->getPlayer2()->getScore();
 
-    // cout << "Copying awele : " << &move->awele << " | Original awele : " << &this->awele << endl;
-    // cout << "Copying Player1 : " << move->awele->getPlayer1() << " | Original Player1 : " << this->awele->getPlayer1() << endl;
-    // cout << "Copying Player2 : " << move->awele->getPlayer2() << " | Original Player2 : " << this->awele->getPlayer2() << endl;
-    // cout << "P1 new : " << player1NewScore << " | old : " << player1OldScore << endl;
-    // cout << "P2 new : " << player2NewScore << " | old : " << player2OldScore << endl;
     // if the player1 gain points
     if (player1NewScore > player1OldScore)
     {
@@ -468,7 +464,7 @@ void Move::decisionAlphaBeta(Player *player, int depth)
 
   for (Move move : possibleMoves)
   {
-    val = alphaBetaValue(player, alpha, beta, false, depth);
+    val = this->alphaBetaValue(player, alpha, beta, false, depth);
     if (val > alpha)
     {
       this->hole = move.getHole();
@@ -508,10 +504,12 @@ int Move::alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int de
     return this->evaluate(player);
   }
 
+  vector<Move> possibleMoves = this->getPossibleMoves(player);
+
   // Max
   if (isMax)
   {
-    for (Move childMove : this->getPossibleMoves(player))
+    for (Move childMove : possibleMoves)
     {
       alpha = max(alpha, childMove.alphaBetaValue(this->awele->getOpponent(player), alpha, beta, !isMax, depth - 1));
       if (alpha >= beta)
@@ -523,9 +521,9 @@ int Move::alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int de
   }
 
   // Min
-  for (Move childMove : this->getPossibleMoves(player))
+  for (int i = 0; i < possibleMoves.size(); i++)
   {
-    beta = min(beta, childMove.alphaBetaValue(this->awele->getOpponent(player), alpha, beta, !isMax, depth - 1));
+    beta = min(beta, possibleMoves[i].alphaBetaValue(this->awele->getOpponent(player), alpha, beta, !isMax, depth - 1));
     if (beta <= alpha)
     {
       return beta; /* alpha cut */
