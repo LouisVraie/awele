@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <iostream>
-#include "Seed.h"
+#include "Color.h"
 
 using namespace std;
 
@@ -12,18 +12,19 @@ namespace Game
   class Hole
   {
   private:
-    vector<Seed *> seeds;
+    int nbBlueSeeds;
+    int nbRedSeeds;
+    int nbTransparentSeeds;
 
   public:
     Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds);
     Hole(const Hole &hole);
     ~Hole();
-    
+
     int getNbSeeds();
     int getNbSeedsByColor(Color color);
-    vector<Seed *> getSeedsByColor(Color color);
-    void addSeed(Seed *seed);
-    void removeSeed(Seed *seed);
+    void addSeed(int nbSeeds, Color color);
+    void removeSeed(int nbSeeds, Color color);
     void removeAllSeeds();
     void show();
   };

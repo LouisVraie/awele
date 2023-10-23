@@ -341,24 +341,23 @@ int Awele::getDynamicDepth(Player *player)
 
   // Get the number of part of holes with seeds
   int holesPartWithSeeds = this->getHolesPartWithSeeds();
-  cout << "HOLES PARTS : " << holesPartWithSeeds << endl;
 
   // Get the number of seeds left
   int seedsLeft = this->getSeedsLeft();
   
   if (holesPartWithSeeds >= 30)
   {
-    return 3;
+    return 4;
   }
 
   if (holesPartWithSeeds >= 20)
   {
-    return 4;
+    return 5;
   }
 
   if (holesPartWithSeeds >= 10)
   {
-    return 5;
+    return 6;
   }
 
   return 1;

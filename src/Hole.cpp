@@ -8,25 +8,13 @@ using namespace Game;
 Hole::Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds)
 {
   // Creation of blue seed(s)
-  for (int iBlue = 0; iBlue < nbBlueSeeds; iBlue++)
-  {
-    Seed *blueSeed = new Seed(Color::Blue);
-    this->seeds.push_back(blueSeed);
-  }
+  this->nbBlueSeeds = nbBlueSeeds;
 
   // Creation of red seed(s)
-  for (int iRed = 0; iRed < nbRedSeeds; iRed++)
-  {
-    Seed *redSeed = new Seed(Color::Red);
-    this->seeds.push_back(redSeed);
-  }
+  this->nbRedSeeds = nbRedSeeds;
 
   // Creation of transparent seed(s)
-  for (int iTransparent = 0; iTransparent < nbTransparentSeeds; iTransparent++)
-  {
-    Seed *transparentSeed = new Seed(Color::Transparent);
-    this->seeds.push_back(transparentSeed);
-  }
+  this->nbTransparentSeeds = nbTransparentSeeds;
 }
 
 /**
@@ -34,11 +22,9 @@ Hole::Hole(int nbBlueSeeds, int nbRedSeeds, int nbTransparentSeeds)
  */
 Hole::Hole(const Hole &hole)
 {
-  // Make a copy of seeds
-  for (Seed* seed : hole.seeds) {
-    Seed* clonedSeed = new Seed(*seed);
-    this->seeds.push_back(clonedSeed);
-  }
+  this->nbBlueSeeds = hole.nbBlueSeeds;
+  this->nbRedSeeds = hole.nbRedSeeds;
+  this->nbTransparentSeeds = hole.nbTransparentSeeds;
 }
 
 /**
@@ -46,9 +32,6 @@ Hole::Hole(const Hole &hole)
  */
 Hole::~Hole()
 {
-  for (Seed* seed : this->seeds) {
-    delete seed;
-  }
 }
 
 /**
@@ -56,7 +39,7 @@ Hole::~Hole()
  */
 int Hole::getNbSeeds()
 {
-  return this->seeds.size();
+  return this->nbBlueSeeds + this->nbRedSeeds + this->nbTransparentSeeds;
 }
 
 /**
@@ -80,59 +63,58 @@ void Hole::show()
 
 int Hole::getNbSeedsByColor(Color color)
 {
-  int nbSeeds = 0;
-
-  for (int i = 0; i < this->seeds.size(); i++)
+  switch (color)
   {
-    if (this->seeds[i]->getColor() == color)
-    {
-      nbSeeds++;
-    }
+  case Color::Blue:
+    return this->nbBlueSeeds;
+  case Color::Red:
+    return this->nbRedSeeds;
+  case Color::Transparent:
+    return this->nbTransparentSeeds;
+  default:
+    return 0;
   }
-
-  return nbSeeds;
-}
-
-/**
- * @brief Get the seeds of by the color
- * @return Vector of seeds pointers of the current hole of the given color
- */
-vector<Seed *> Hole::getSeedsByColor(Color color)
-{
-  vector<Seed *> seeds;
-
-  for (Seed *seed : this->seeds)
-  {
-    if (seed->getColor() == color)
-    {
-      seeds.push_back(seed);
-    }
-  }
-
-  return seeds;
 }
 
 /**
  * @brief Add the given seed to the hole
  */
-void Hole::addSeed(Seed *seed)
+void Hole::addSeed(int nbSeeds, Color color)
 {
-  this->seeds.push_back(seed);
+  switch (color)
+  {
+  case Color::Blue:
+    this->nbBlueSeeds += nbSeeds;
+    break;
+  case Color::Red:
+    this->nbRedSeeds += nbSeeds;
+    break;
+  case Color::Transparent:
+    this->nbTransparentSeeds += nbSeeds;
+    break;
+  default:
+    break;
+  }
 }
 
 /**
  * @brief Remove the given seed of the hole
  */
-void Hole::removeSeed(Seed *seed)
+void Hole::removeSeed(int nbSeeds, Color color)
 {
-  for (auto it = seeds.begin(); it != seeds.end(); it++)
+  switch (color)
   {
-    if (*it == seed)
-    {
-      // Remove the seed
-      seeds.erase(it);
-      break;
-    }
+  case Color::Blue:
+    this->nbBlueSeeds -= nbSeeds;
+    break;
+  case Color::Red:
+    this->nbRedSeeds -= nbSeeds;
+    break;
+  case Color::Transparent:
+    this->nbTransparentSeeds -= nbSeeds;
+    break;
+  default:
+    break;
   }
 }
 
@@ -141,5 +123,7 @@ void Hole::removeSeed(Seed *seed)
  */
 void Hole::removeAllSeeds()
 {
-  this->seeds.clear();
+  this->nbBlueSeeds = 0;
+  this->nbRedSeeds = 0;
+  this->nbTransparentSeeds = 0;
 }

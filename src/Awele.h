@@ -7,7 +7,6 @@
 #include <stdexcept>
 #include <algorithm>
 #include "Player.h"
-#include "Seed.h"
 #include "Hole.h"
 #include "Rule.h"
 
