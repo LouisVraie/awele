@@ -46,11 +46,11 @@ namespace Game
     void moveRed(Player *player);
     bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
 
-    vector<Move> getPossibleMoves(Move currentPos, Player *player);
+    vector<Move> getPossibleMoves(Player *player);
 
     int evaluate(Player *player);
-    void decisionAlphaBeta(Move currentPos, Player *player, int pmax);
-    int alphaBetaValue(Move currentPos, Player *player, int alpha, int beta, bool isMax, int pmax);
+    void decisionAlphaBeta(Player *player, int pmax);
+    int alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int pmax);
   };
 }
 

@@ -168,7 +168,7 @@ void Awele::play()
   int depth = this->getDynamicDepth(currentPlayer);
 
   // Ask the player to play
-  move.decisionAlphaBeta(move, currentPlayer, 1);
+  move.decisionAlphaBeta(currentPlayer, depth);
 
   move.askMove(currentPlayer);
 
@@ -302,6 +302,33 @@ int Awele::getSeedsLeft(Player *player)
 }
 
 /**
+ * @brief Get the numbers of holes part with seeds
+ * @return An integer
+ */
+int Awele::getHolesPartWithSeeds()
+{
+  int result = 0;
+
+  for (int i = 0; i < this->rule->getNbHoles(); i++)
+  {
+    if(this->holes[i]->getNbSeedsByColor(Color::Blue) > 0)
+    {
+      result++;
+    }
+    if(this->holes[i]->getNbSeedsByColor(Color::Red) > 0)
+    {
+      result++;
+    }
+    if(this->holes[i]->getNbSeedsByColor(Color::Transparent) > 0)
+    {
+      result++;
+    }
+  }
+
+  return result;
+}
+
+/**
  * @brief Get the optimal depth for the current turn
  * @return An integer which represent the depth
  */
@@ -312,11 +339,16 @@ int Awele::getDynamicDepth(Player *player)
     return 1;
   }
 
+  // // Get the number of part of holes with seeds
+  // int holesPartWithSeeds = this->getHolesPartWithSeeds();
+
+  // cout << "HOLES PARTS : " << holesPartWithSeeds << endl;
+  // Get the number of seeds left
   int seedsLeft = this->getSeedsLeft();
 
   if (seedsLeft >= 70)
   {
-    return 5;
+    return 3;
   }
   if (seedsLeft >= 60)
   {

@@ -54,6 +54,7 @@ namespace Game
     void checkStarving(Player *player);
     int getSeedsLeft();
     int getSeedsLeft(Player *player);
+    int getHolesPartWithSeeds();
     int getDynamicDepth(Player *player);
     Player *getOpponent(Player *player);
     vector<int> getOpponentHoles(Player *player);
