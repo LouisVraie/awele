@@ -17,6 +17,8 @@ namespace Game
     int score;
     int nbMoves;
 
+    int chosen;
+
     int lastHoleIndex;
 
     vector<int> allowedHoles;
@@ -36,6 +38,9 @@ namespace Game
 
     void setNbMoves(int nbMoves);
     int getNbMoves();
+
+    void setChosen(bool chosen);
+    bool getChosen();
 
     void setLastHoleIndex(int lastHoleIndex);
     int getLastHoleIndex();

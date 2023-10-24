@@ -168,7 +168,7 @@ void Move::askMove(Player *player)
     }
 
     // Ask input following the player
-    if (player == this->awele->getPlayer1())
+    if (player->getChosen())
     {
       input = this->getNextMove();
       // getline(cin, input);
@@ -429,26 +429,26 @@ int Move::evaluate(Player *player)
     {
       copiedPlayer = this->awele->getPlayer2();
     }
-    
+
     // Give the color weight
     Color currentColor = move->getColor();
     bool currentIsTransparent = move->getIsTransparent();
 
     if (currentColor == Color::Blue && !currentIsTransparent)
     {
-      colorWeight = 1;
+      colorWeight = 10;
     }
     else if (currentColor == Color::Red && !currentIsTransparent)
     {
-      colorWeight = 5;
+      colorWeight = 50;
     }
     else if (currentColor == Color::Blue && currentIsTransparent)
     {
-      colorWeight = 2;
+      colorWeight = 20;
     }
     else if (currentColor == Color::Red && currentIsTransparent)
     {
-      colorWeight = 4;
+      colorWeight = 40;
     }
 
     int nbSeeds = move->awele->getHoles()[move->getHole()]->getNbSeeds();
@@ -467,17 +467,17 @@ int Move::evaluate(Player *player)
     int player2OldScore = this->awele->getPlayer2()->getScore();
 
     int result = 0;
-    
+
     // if the player1 gain points
     if (player->getName() == this->awele->getPlayer1()->getName())
     {
-      result = (player1NewScore - player1OldScore + 1) * nbSeedsWeight; 
+      result = (player1NewScore - player1OldScore + 1) * nbSeedsWeight;
       return result;
     }
     // if the player2 gain points
     else
     {
-      result = -(player2NewScore - player2OldScore + 1) * nbSeedsWeight; 
+      result = -(player2NewScore - player2OldScore + 1) * nbSeedsWeight;
       return result;
     }
 
@@ -514,7 +514,11 @@ void Move::decisionAlphaBeta(Player *player, int depth)
 
   auto duration = duration_cast<milliseconds>(endTime - startTime);
 
-  cout << "AlphaBeta execution time : " << duration.count() << "ms | Eval : " << alpha << endl;
+  cout << "AlphaBeta execution time : " << duration.count() << "ms";
+  cout << " | Depth : " << depth;
+  cout << " | Player : " << player->getName();
+  cout << " | Eval : " << alpha << endl;
+
   cout << player->getName() << " Best next move : " << this->getNextMove() << endl;
 }
 

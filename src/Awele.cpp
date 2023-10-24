@@ -18,6 +18,9 @@ Awele::Awele(Rule *rule)
   this->player1->setName("Player1");
   this->player2->setName("Player2");
 
+  // Choose a player
+  this->choosePlayer();
+
   vector<int> player1Holes, player2Holes;
 
   for (int i = 0; i < this->rule->getNbHoles(); i++)
@@ -83,6 +86,38 @@ Awele::~Awele()
   {
     delete hole;
   }
+}
+
+/**
+ * @brief Ask to choose a player
+ */
+void Awele::choosePlayer()
+{
+  string input;
+  do
+  {
+    cout << "Choose your players [1] or [2] : ";
+
+    getline(cin, input);
+    if (input == "1")
+    {
+      this->player1->setChosen(true);
+      this->player2->setChosen(false);
+
+      cout << this->player1->getName() << " has been chosen." << endl;
+    }
+    else if (input == "2")
+    {
+      this->player1->setChosen(false);
+      this->player2->setChosen(true);
+
+      cout << this->player2->getName() << " has been chosen." << endl;
+    }
+    else
+    {
+      cout << "You must chose one of the given players [1] or [2] !" << endl;
+    }
+  } while (input != "1" && input != "2");
 }
 
 /**
@@ -164,11 +199,15 @@ void Awele::play()
 
   Move move = Move(this);
 
-  // Get corresponding depth
-  int depth = this->getDynamicDepth(currentPlayer);
+  // If the currentPlayer is the chosen one
+  if(currentPlayer->getChosen())
+  {
+    // Get corresponding depth
+    int depth = this->getDynamicDepth(currentPlayer);
 
-  // Ask the player to play
-  move.decisionAlphaBeta(currentPlayer, depth);
+    // Ask the player to play
+    move.decisionAlphaBeta(currentPlayer, depth);
+  }
 
   move.askMove(currentPlayer);
 
@@ -313,15 +352,15 @@ int Awele::getHolesPartWithSeeds()
 
   for (int i = 0; i < this->rule->getNbHoles(); i++)
   {
-    if(this->holes[i]->getNbSeedsByColor(Color::Blue) > 0)
+    if (this->holes[i]->getNbSeedsByColor(Color::Blue) > 0)
     {
       result++;
     }
-    if(this->holes[i]->getNbSeedsByColor(Color::Red) > 0)
+    if (this->holes[i]->getNbSeedsByColor(Color::Red) > 0)
     {
       result++;
     }
-    if(this->holes[i]->getNbSeedsByColor(Color::Transparent) > 0)
+    if (this->holes[i]->getNbSeedsByColor(Color::Transparent) > 0)
     {
       result++;
     }
@@ -346,7 +385,7 @@ int Awele::getDynamicDepth(Player *player)
 
   // Get the number of seeds left
   int seedsLeft = this->getSeedsLeft();
-  
+
   if (holesPartWithSeeds >= 30)
   {
     return 4;

@@ -20,6 +20,8 @@ Player::Player(const Player &player)
   this->score = player.score;
   this->nbMoves = player.nbMoves;
 
+  this->chosen = player.chosen;
+
   this->lastHoleIndex = player.lastHoleIndex;
 
   this->allowedHoles = player.allowedHoles;
@@ -64,6 +66,15 @@ void Player::setNbMoves(int nbMoves)
 int Player::getNbMoves()
 {
   return this->nbMoves;
+}
+
+void Player::setChosen(bool chosen)
+{
+  this->chosen = chosen;
+}
+bool Player::getChosen()
+{
+  return this->chosen;
 }
 
 void Player::setLastHoleIndex(int lastHoleIndex)

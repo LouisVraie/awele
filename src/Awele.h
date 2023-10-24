@@ -40,6 +40,8 @@ namespace Game
     Awele(const Awele &awele);
     ~Awele();
 
+    void choosePlayer();
+    
     Rule *getRule();
     Player *getPlayer1();
     Player *getPlayer2();
