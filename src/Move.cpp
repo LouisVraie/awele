@@ -409,7 +409,7 @@ int Move::evaluate(Player *player)
 {
   int colorWeight = 0;
   // if it is the first turn
-  if (this->awele->getTurn() == 1)
+  if (this->awele->getTurn() <= 4)
   {
     return rand() % numeric_limits<int>::max();
   }
@@ -419,36 +419,48 @@ int Move::evaluate(Player *player)
 
     // Make a copy of move to perform the move without affecting the real board
     Move *move = new Move(*this);
-    Player *copiedPlayer;
+    Player *currentPlayer;
+    Player *opponentPlayer;
 
     if (player->getName() == this->awele->getPlayer1()->getName())
     {
-      copiedPlayer = this->awele->getPlayer1();
+      currentPlayer = this->awele->getPlayer1();
     }
     else
     {
-      copiedPlayer = this->awele->getPlayer2();
+      currentPlayer = this->awele->getPlayer2();
     }
+
+    opponentPlayer = this->awele->getOpponent(currentPlayer);
+
+    // Get the old score of both players
+    int currentPlayerOldScore = currentPlayer->getScore();
+    int opponentPlayerOldScore = opponentPlayer->getScore();
 
     // Give the color weight
     Color currentColor = move->getColor();
     bool currentIsTransparent = move->getIsTransparent();
 
+    // Blue
     if (currentColor == Color::Blue && !currentIsTransparent)
     {
-      colorWeight = 10;
+      colorWeight = 1;
     }
+    // Red
     else if (currentColor == Color::Red && !currentIsTransparent)
     {
-      colorWeight = 50;
+      colorWeight = 5;
     }
+
+    // Transparent Blue
     else if (currentColor == Color::Blue && currentIsTransparent)
     {
-      colorWeight = 20;
+      colorWeight = 2;
     }
+    // Transparent Red
     else if (currentColor == Color::Red && currentIsTransparent)
     {
-      colorWeight = 40;
+      colorWeight = 4;
     }
 
     int nbSeeds = move->awele->getHoles()[move->getHole()]->getNbSeeds();
@@ -456,28 +468,34 @@ int Move::evaluate(Player *player)
     int nbSeedsWeight = nbSeeds * colorWeight;
 
     // Perform the move
-    move->makeMove(copiedPlayer);
+    move->makeMove(currentPlayer);
     // Do the scoring
-    move->awele->scoreAfterMove(copiedPlayer);
+    move->awele->scoreAfterMove(currentPlayer);
 
-    int player1NewScore = move->awele->getPlayer1()->getScore();
-    int player2NewScore = move->awele->getPlayer2()->getScore();
+    int currentPlayerNewScore = currentPlayer->getScore();
+    int opponentPlayerNewScore = opponentPlayer->getScore();
 
-    int player1OldScore = this->awele->getPlayer1()->getScore();
-    int player2OldScore = this->awele->getPlayer2()->getScore();
+    return currentPlayerNewScore - opponentPlayerNewScore;
 
     int result = 0;
+    int scoreDeltaCurrent = currentPlayerNewScore - currentPlayerOldScore;
+    int scoreDeltaOpponent = opponentPlayerNewScore - opponentPlayerOldScore;
+    int delta = 1;
+    int deltaWeight = 50;
 
-    // if the player1 gain points
-    if (player->getName() == this->awele->getPlayer1()->getName())
+    // if the chosen
+    if (currentPlayer->getChosen())
     {
-      result = (player1NewScore - player1OldScore + 1) * nbSeedsWeight;
+      delta += scoreDeltaCurrent - scoreDeltaOpponent * deltaWeight;
+
+      result = (delta)*nbSeedsWeight;
       return result;
     }
-    // if the player2 gain points
     else
     {
-      result = -(player2NewScore - player2OldScore + 1) * nbSeedsWeight;
+      delta += scoreDeltaOpponent - scoreDeltaCurrent * deltaWeight;
+
+      result = -(delta)*nbSeedsWeight;
       return result;
     }
 
@@ -561,9 +579,9 @@ int Move::alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int de
   }
 
   // Min
-  for (int i = 0; i < possibleMoves.size(); i++)
+  for (Move childMove : possibleMoves)
   {
-    beta = min(beta, possibleMoves[i].alphaBetaValue(this->awele->getOpponent(player), alpha, beta, !isMax, depth - 1));
+    beta = min(beta, childMove.alphaBetaValue(this->awele->getOpponent(player), alpha, beta, !isMax, depth - 1));
     if (beta <= alpha)
     {
       return beta; /* alpha cut */

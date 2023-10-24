@@ -401,7 +401,7 @@ int Awele::getDynamicDepth(Player *player)
     return 6;
   }
 
-  return 1;
+  return 8;
 }
 
 /**
