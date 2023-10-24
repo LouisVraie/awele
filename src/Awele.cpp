@@ -187,6 +187,8 @@ void Awele::play()
  */
 void Awele::show()
 {
+  cout << endl;
+  cout << "[TURN " << this->turn << "]" << endl;
   this->player1->show();
   this->player2->show();
   cout << "Seeds left : " << this->getSeedsLeft() << endl;
@@ -369,12 +371,12 @@ int Awele::getDynamicDepth(Player *player)
  */
 Player *Awele::getOpponent(Player *player)
 {
-  if (player == this->player1)
+  if (player->getName() == this->player1->getName())
   {
-    return player2;
+    return this->player2;
   }
 
-  return player1;
+  return this->player1;
 }
 
 /**

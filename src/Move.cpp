@@ -110,7 +110,7 @@ void Move::setRandomMove(Player *player)
   int hole = player->getAllowedHoles()[holeIndex];
 
   // Get a random isTransparent
-  bool isTransparent = rand() % 1;
+  bool isTransparent = rand() % 2;
 
   // Get a random color
   Color color;
@@ -168,16 +168,18 @@ void Move::askMove(Player *player)
     }
 
     // Ask input following the player
-    // if (player == this->awele->getPlayer1())
-    // {
-    //   getline(cin, input);
-    // }
-    // else
-    // {
-    //   input = this->randomMove(player);
-    //   cout << input << endl;
-    // }
-    getline(cin, input);
+    if (player == this->awele->getPlayer1())
+    {
+      input = this->getNextMove();
+      // getline(cin, input);
+    }
+    else
+    {
+      input = this->randomMove(player);
+    }
+    cout << input << endl;
+
+    // getline(cin, input);
 
     try
     {
@@ -405,6 +407,7 @@ vector<Move> Move::getPossibleMoves(Player *player)
  */
 int Move::evaluate(Player *player)
 {
+  int colorWeight = 0;
   // if it is the first turn
   if (this->awele->getTurn() == 1)
   {
@@ -418,7 +421,7 @@ int Move::evaluate(Player *player)
     Move *move = new Move(*this);
     Player *copiedPlayer;
 
-    if (player == this->awele->getPlayer1())
+    if (player->getName() == this->awele->getPlayer1()->getName())
     {
       copiedPlayer = this->awele->getPlayer1();
     }
@@ -426,6 +429,31 @@ int Move::evaluate(Player *player)
     {
       copiedPlayer = this->awele->getPlayer2();
     }
+    
+    // Give the color weight
+    Color currentColor = move->getColor();
+    bool currentIsTransparent = move->getIsTransparent();
+
+    if (currentColor == Color::Blue && !currentIsTransparent)
+    {
+      colorWeight = 1;
+    }
+    else if (currentColor == Color::Red && !currentIsTransparent)
+    {
+      colorWeight = 5;
+    }
+    else if (currentColor == Color::Blue && currentIsTransparent)
+    {
+      colorWeight = 2;
+    }
+    else if (currentColor == Color::Red && currentIsTransparent)
+    {
+      colorWeight = 4;
+    }
+
+    int nbSeeds = move->awele->getHoles()[move->getHole()]->getNbSeeds();
+
+    int nbSeedsWeight = nbSeeds * colorWeight;
 
     // Perform the move
     move->makeMove(copiedPlayer);
@@ -438,19 +466,23 @@ int Move::evaluate(Player *player)
     int player1OldScore = this->awele->getPlayer1()->getScore();
     int player2OldScore = this->awele->getPlayer2()->getScore();
 
+    int result = 0;
+    
     // if the player1 gain points
-    if (player1NewScore > player1OldScore)
+    if (player->getName() == this->awele->getPlayer1()->getName())
     {
-      return player1NewScore - player1OldScore;
+      result = (player1NewScore - player1OldScore + 1) * nbSeedsWeight; 
+      return result;
     }
     // if the player2 gain points
-    if (player2NewScore > player2OldScore)
+    else
     {
-      return -(player2NewScore - player2OldScore);
+      result = -(player2NewScore - player2OldScore + 1) * nbSeedsWeight; 
+      return result;
     }
 
     // If nothing as changed
-    return 0;
+    return nbSeedsWeight;
   }
 }
 
@@ -482,7 +514,7 @@ void Move::decisionAlphaBeta(Player *player, int depth)
 
   auto duration = duration_cast<milliseconds>(endTime - startTime);
 
-  cout << "AlphaBeta execution time : " << duration.count() << "ms" << endl;
+  cout << "AlphaBeta execution time : " << duration.count() << "ms | Eval : " << alpha << endl;
   cout << player->getName() << " Best next move : " << this->getNextMove() << endl;
 }
 
@@ -503,7 +535,9 @@ int Move::alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int de
   // }
   if (depth == 0)
   {
-    return this->evaluate(player);
+    int eval = this->evaluate(player);
+    // cout << player->getName() << " evaluate() : " << eval << endl;
+    return eval;
   }
 
   vector<Move> possibleMoves = this->getPossibleMoves(player);
