@@ -5,8 +5,10 @@ using namespace Game;
 /**
  * @brief Constructor
  */
-Player::Player()
+Player::Player(int id, string name)
 {
+  this->id = id;
+  this->name = name;
   this->score = 0;
   this->nbMoves = 0;
 }
@@ -16,6 +18,7 @@ Player::Player()
  */
 Player::Player(const Player &player)
 {
+  this->id = player.id;
   this->name = player.name;
   this->score = player.score;
   this->nbMoves = player.nbMoves;
@@ -68,13 +71,13 @@ int Player::getNbMoves()
   return this->nbMoves;
 }
 
-void Player::setNextMove(vector<Move> moves)
+void Player::setNextMove(Move nextMove)
 {
-  this->moves = moves;
+  this->nextMove = nextMove;
 }
-vector<Move> Player::getNextMove()
+Move Player::getNextMove()
 {
-  return this->moves;
+  return this->nextMove;
 }
 
 void Player::setChosen(bool chosen)

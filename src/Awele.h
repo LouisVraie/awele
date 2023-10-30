@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <tuple>
 #include <string>
 #include <stdexcept>
 #include <algorithm>
@@ -33,6 +34,7 @@ namespace Game
 
     Player *player1;
     Player *player2;
+    int currentPlayerId;
 
     vector<Hole *> holes;
     int turn;
@@ -45,7 +47,7 @@ namespace Game
     ~Awele();
 
     void choosePlayer();
-    
+
     Rule *getRule();
     Player *getPlayer1();
     Player *getPlayer2();
@@ -55,12 +57,15 @@ namespace Game
 
     void play();
     void show();
+    void performMove();
     void scoreAfterMove(Player *player);
     void checkStarving(Player *player);
     int getSeedsLeft();
     int getSeedsLeft(Player *player);
     int getHolesPartWithSeeds();
     int getDynamicDepth(Player *player);
+    void nextPlayer();
+    Player *getCurrentPlayer();
     Player *getOpponent(Player *player);
     vector<int> getOpponentHoles(Player *player);
 
@@ -74,9 +79,11 @@ namespace Game
 
     GameStatus checkGameStatus();
 
+    Move getRandomMove(Player *player);
+
     int evaluate(Player *player);
     void decisionAlphaBeta(Player *player, int pmax);
-    int alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int pmax);
+    tuple<int, Move> alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int pmax);
   };
 }
 

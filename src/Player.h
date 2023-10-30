@@ -13,20 +13,25 @@ namespace Game
   class Player
   {
   private:
+
+    int id;
     string name;
     int score;
     int nbMoves;
     Move nextMove;
 
-    int chosen;
+    bool chosen;
     int lastHoleIndex;
     vector<int> allowedHoles;
 
   public:
-    Player();
+    Player(int id, string name);
     Player(const Player &player);
 
     void show();
+
+    void setId(int id);
+    int getId();
 
     void setName(string name);
     string getName();

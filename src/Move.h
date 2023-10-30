@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "Color.h"
-#include "Player.h"
+// #include "Player.h"
 #include "Rule.h"
 
 using namespace std;
@@ -35,9 +35,6 @@ namespace Game
     bool getIsTransparent();
 
     string getString();
-
-    void setRandomMove(Player *player, Rule *rule);
-    static string randomMove(Player *player, Rule *rule);
   };
 }
 
