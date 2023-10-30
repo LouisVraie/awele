@@ -2,27 +2,25 @@
 #define MOVE_H
 
 #include <string>
-#include <limits>
-#include <chrono>
-#include "Awele.h"
+#include <vector>
+#include "Color.h"
+#include "Player.h"
+#include "Rule.h"
 
 using namespace std;
-using namespace chrono;
 
 namespace Game
 {
   class Move
   {
   private:
-    Awele *awele;
-
     int hole;
     Color color;
     bool isTransparent;
 
   public:
-    Move(Awele *awele);
-    Move(Awele *awele, int hole, Color color, bool isTransparent);
+    Move();
+    Move(int hole, Color color, bool isTransparent);
     Move(const Move &move);
     ~Move();
 
@@ -36,21 +34,10 @@ namespace Game
     void setIsTransparent(bool isTransparent);
     bool getIsTransparent();
 
-    string getNextMove();
+    string getString();
 
-    void setRandomMove(Player *player);
-    string randomMove(Player *player);
-    void askMove(Player *player);
-    void makeMove(Player *player);
-    void moveBlue(Player *player);
-    void moveRed(Player *player);
-    bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
-
-    vector<Move> getPossibleMoves(Player *player);
-
-    int evaluate(Player *player);
-    void decisionAlphaBeta(Player *player, int pmax);
-    int alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int pmax);
+    void setRandomMove(Player *player, Rule *rule);
+    static string randomMove(Player *player, Rule *rule);
   };
 }
 

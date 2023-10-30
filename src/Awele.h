@@ -6,11 +6,15 @@
 #include <string>
 #include <stdexcept>
 #include <algorithm>
+#include <limits>
+#include <chrono>
 #include "Player.h"
 #include "Hole.h"
 #include "Rule.h"
+#include "Move.h"
 
 using namespace std;
+using namespace chrono;
 
 namespace Game
 {
@@ -59,7 +63,20 @@ namespace Game
     int getDynamicDepth(Player *player);
     Player *getOpponent(Player *player);
     vector<int> getOpponentHoles(Player *player);
+
+    bool isMovePossible(Player *player, int chosenMove, Color chosenColor, bool chosenIsTransparent);
+    vector<Move> getPossibleMoves(Player *player);
+
+    void askMove(Player *player);
+    void makeMove(Player *player);
+    void moveBlue(Player *player);
+    void moveRed(Player *player);
+
     GameStatus checkGameStatus();
+
+    int evaluate(Player *player);
+    void decisionAlphaBeta(Player *player, int pmax);
+    int alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int pmax);
   };
 }
 

@@ -5,17 +5,15 @@ using namespace Game;
 /**
  * @brief Constructor
  */
-Move::Move(Awele *awele)
+Move::Move()
 {
-  this->awele = awele;
 }
 
 /**
  * @brief Constructor
  */
-Move::Move(Awele *awele, int hole, Color color, bool isTransparent)
+Move::Move(int hole, Color color, bool isTransparent)
 {
-  this->awele = new Awele(*(awele));
   this->hole = hole;
   this->color = color;
   this->isTransparent = isTransparent;
@@ -26,7 +24,6 @@ Move::Move(Awele *awele, int hole, Color color, bool isTransparent)
  */
 Move::Move(const Move &move)
 {
-  this->awele = new Awele(*(move.awele));
   this->hole = move.hole;
   this->color = move.color;
   this->isTransparent = move.isTransparent;
@@ -37,10 +34,6 @@ Move::Move(const Move &move)
  */
 Move::~Move()
 {
-  if (this->awele->getIsCopied())
-  {
-    delete this->awele;
-  }
 }
 
 /**
@@ -48,7 +41,7 @@ Move::~Move()
  */
 void Move::showMove()
 {
-  cout << this->getNextMove();
+  cout << this->getString();
 }
 
 /**
@@ -92,10 +85,10 @@ bool Move::getIsTransparent()
 }
 
 /**
- * @brief Get the best next move
+ * @brief Get the move
  * @return String representing the move
  */
-string Move::getNextMove()
+string Move::getString()
 {
   return to_string(this->hole + 1) + (this->isTransparent ? "T" : "") + getLetterFromColor(this->color);
 }
@@ -103,10 +96,10 @@ string Move::getNextMove()
 /**
  * @brief Set a random input for the given player
  */
-void Move::setRandomMove(Player *player)
+void Move::setRandomMove(Player *player, Rule *rule)
 {
   // Get a random hole allowed for the player
-  int holeIndex = rand() % (this->awele->getRule()->getNbHoles() / 2);
+  int holeIndex = rand() % (rule->getNbHoles() / 2);
   int hole = player->getAllowedHoles()[holeIndex];
 
   // Get a random isTransparent
@@ -139,453 +132,10 @@ void Move::setRandomMove(Player *player)
  * @brief Get a random input for the given player
  * @return The string representing the move
  */
-string Move::randomMove(Player *player)
+string Move::randomMove(Player *player, Rule *rule)
 {
-  this->setRandomMove(player);
+  Move move;
+  move.setRandomMove(player, rule);
 
-  return this->getNextMove();
-}
-
-/**
- * @brief Ask the player to enter a move
- */
-void Move::askMove(Player *player)
-{
-  string input;
-  Color chosenColor = Color::Default;
-  bool chosenIsTransparent;
-  int chosenHole;
-
-  bool endAskCondition = true;
-
-  do
-  {
-    chosenIsTransparent = false;
-
-    if (this->awele->getRule()->getDebug())
-    {
-      cout << player->getName() << " Choose your move : ";
-    }
-
-    // Ask input following the player
-    if (player->getChosen())
-    {
-      input = this->getNextMove();
-      // getline(cin, input);
-    }
-    else
-    {
-      input = this->randomMove(player);
-    }
-    cout << input << endl;
-
-    // getline(cin, input);
-
-    try
-    {
-      int inputLength = input.length();
-      // Cut the number and the string
-      if (inputLength >= 2)
-      {
-        // Put the string toupper
-        transform(input.begin(), input.end(), input.begin(), ::toupper);
-
-        string lastTwoChars = input.substr(inputLength - 2);
-
-        if (lastTwoChars[0] == 'T')
-        {
-          chosenIsTransparent = true;
-          chosenHole = stoi(input.substr(0, inputLength - 2));
-        }
-        else
-        {
-          chosenHole = stoi(input.substr(0, inputLength - 1));
-        }
-        // get the chosen color
-        chosenColor = getColorFromLetter(lastTwoChars[1]);
-
-        chosenHole--;
-
-        if (endAskCondition = !this->isMovePossible(player, chosenHole, chosenColor, chosenIsTransparent))
-        {
-          if (this->awele->getRule()->getDebug())
-          {
-            cout << player->getName() << " Invalid move. Please enter a valid move." << endl;
-          }
-        }
-      }
-    }
-    catch (const exception &)
-    {
-      chosenHole = -1;
-      if (this->awele->getRule()->getDebug())
-      {
-        cout << player->getName() << " Invalid input. Please enter a valid move.." << endl;
-      }
-    }
-
-  } while (endAskCondition);
-
-  // Increment the number of move of the current player
-  player->setNbMoves(player->getNbMoves() + 1);
-
-  // Set the chosen move infos
-  this->setHole(chosenHole);
-  this->setColor(chosenColor);
-  this->setIsTransparent(chosenIsTransparent);
-}
-
-/**
- * @brief Perform the move chosen by the player
- */
-void Move::makeMove(Player *player)
-{
-  // if blue
-  if (this->getColor() == Color::Blue)
-  {
-    this->moveBlue(player);
-  }
-  // if red
-  if (this->getColor() == Color::Red)
-  {
-    this->moveRed(player);
-  }
-}
-
-/**
- * @brief Perform a blue move
- */
-void Move::moveBlue(Player *player)
-{
-  int nbSeeds;
-  int targetHole = 0;
-
-  // get opponent holes
-  vector<int> opponentHoles = this->awele->getOpponentHoles(player);
-
-  // if transparent
-  if (this->getIsTransparent())
-  {
-    color = Color::Transparent;
-  }
-  else
-  {
-    color = Color::Blue;
-  }
-
-  // get seeds of the chosen hole
-  nbSeeds = this->awele->getHoles()[this->getHole()]->getNbSeedsByColor(color);
-
-  // foreach seed
-  for (int i = 0; i < nbSeeds; i++)
-  {
-    int chosenHole = this->getHole() % 2 == 1 ? this->getHole() + 1 : this->getHole();
-
-    int targetHoleIndex = (chosenHole / 2 + i) % opponentHoles.size();
-    targetHole = opponentHoles[targetHoleIndex];
-
-    // We add the seed to the new hole
-    this->awele->getHoles()[targetHole]->addSeed(1, color);
-
-    // We remove the seed of the origin hole
-    this->awele->getHoles()[this->getHole()]->removeSeed(1, color);
-  }
-
-  player->setLastHoleIndex(targetHole);
-}
-
-/**
- * @brief Perform a red move
- */
-void Move::moveRed(Player *player)
-{
-  int nbSeeds;
-  int targetHole = this->getHole();
-  int i = 0;
-  Color color;
-
-  // if transparent
-  if (this->getIsTransparent())
-  {
-    color = Color::Transparent;
-  }
-  else
-  {
-    color = Color::Red;
-  }
-
-  // get seeds of the chosen hole
-  nbSeeds = this->awele->getHoles()[this->getHole()]->getNbSeedsByColor(color);
-
-  // while the hole got seeds
-  while (this->awele->getHoles()[this->getHole()]->getNbSeedsByColor(color) != 0)
-  {
-    targetHole = (targetHole + 1) % this->awele->getRule()->getNbHoles();
-
-    // we skip the chosen hole if the player did more than one turn of the board
-    if (targetHole != this->getHole())
-    {
-      // Check if i is a valid index for seeds
-      if (i < nbSeeds)
-      {
-        // We add the seed to the new hole
-        this->awele->getHoles()[targetHole]->addSeed(1, color);
-
-        // We remove the seed of the origin hole
-        this->awele->getHoles()[this->getHole()]->removeSeed(1, color);
-
-        i++;
-      }
-      else
-      {
-        break;
-      }
-    }
-  }
-
-  player->setLastHoleIndex(targetHole);
-}
-
-/**
- * @brief Check if the given move is possible for the given player
- * @return
- */
-bool Move::isMovePossible(Player *player, int chosenHole, Color chosenColor, bool chosenIsTransparent)
-{
-  if (chosenIsTransparent)
-  {
-    chosenColor = Color::Transparent;
-  }
-
-  return chosenColor != Color::Default && this->awele->getHoles()[chosenHole]->getNbSeedsByColor(chosenColor) > 0 && chosenHole >= 0 && chosenHole <= this->awele->getRule()->getNbHoles() - 1 && player->isHoleAllowed(chosenHole);
-}
-
-/**
- * @brief Get all the possible moves from the current position for the current player
- * @return A vector of Moves
- */
-vector<Move> Move::getPossibleMoves(Player *player)
-{
-  vector<Move> possibleMoves;
-
-  vector<int> allowedHoles = player->getAllowedHoles();
-
-  // for each allowedHoles
-  for (int index : allowedHoles)
-  {
-    // try blue
-    if (this->isMovePossible(player, index, Color::Blue, false))
-    {
-      possibleMoves.push_back(Move(this->awele, index, Color::Blue, false));
-    }
-
-    // try red
-    if (this->isMovePossible(player, index, Color::Red, false))
-    {
-      possibleMoves.push_back(Move(this->awele, index, Color::Red, false));
-    }
-
-    // try transparent blue
-    if (this->isMovePossible(player, index, Color::Blue, true))
-    {
-      possibleMoves.push_back(Move(this->awele, index, Color::Blue, true));
-    }
-
-    // try transparent red
-    if (this->isMovePossible(player, index, Color::Red, true))
-    {
-      possibleMoves.push_back(Move(this->awele, index, Color::Red, true));
-    }
-  }
-
-  return possibleMoves;
-}
-
-/**
- * @brief Evaluate a move position
- * @return An integer which symbolize the move result
- */
-int Move::evaluate(Player *player)
-{
-  int colorWeight = 0;
-  // if it is the first turn
-  if (this->awele->getTurn() <= 4)
-  {
-    return rand() % numeric_limits<int>::max();
-  }
-  else
-  {
-    // check how many points the move can give
-
-    // Make a copy of move to perform the move without affecting the real board
-    Move *move = new Move(*this);
-    Player *currentPlayer;
-    Player *opponentPlayer;
-
-    if (player->getName() == this->awele->getPlayer1()->getName())
-    {
-      currentPlayer = this->awele->getPlayer1();
-    }
-    else
-    {
-      currentPlayer = this->awele->getPlayer2();
-    }
-
-    opponentPlayer = this->awele->getOpponent(currentPlayer);
-
-    // Get the old score of both players
-    int currentPlayerOldScore = currentPlayer->getScore();
-    int opponentPlayerOldScore = opponentPlayer->getScore();
-
-    // Give the color weight
-    Color currentColor = move->getColor();
-    bool currentIsTransparent = move->getIsTransparent();
-
-    // Blue
-    if (currentColor == Color::Blue && !currentIsTransparent)
-    {
-      colorWeight = 1;
-    }
-    // Red
-    else if (currentColor == Color::Red && !currentIsTransparent)
-    {
-      colorWeight = 5;
-    }
-
-    // Transparent Blue
-    else if (currentColor == Color::Blue && currentIsTransparent)
-    {
-      colorWeight = 2;
-    }
-    // Transparent Red
-    else if (currentColor == Color::Red && currentIsTransparent)
-    {
-      colorWeight = 4;
-    }
-
-    int nbSeeds = move->awele->getHoles()[move->getHole()]->getNbSeeds();
-
-    int nbSeedsWeight = nbSeeds * colorWeight;
-
-    // Perform the move
-    move->makeMove(currentPlayer);
-    // Do the scoring
-    move->awele->scoreAfterMove(currentPlayer);
-
-    int currentPlayerNewScore = currentPlayer->getScore();
-    int opponentPlayerNewScore = opponentPlayer->getScore();
-
-    return currentPlayerNewScore - opponentPlayerNewScore;
-
-    int result = 0;
-    int scoreDeltaCurrent = currentPlayerNewScore - currentPlayerOldScore;
-    int scoreDeltaOpponent = opponentPlayerNewScore - opponentPlayerOldScore;
-    int delta = 1;
-    int deltaWeight = 50;
-
-    // if the chosen
-    if (currentPlayer->getChosen())
-    {
-      delta += scoreDeltaCurrent - scoreDeltaOpponent * deltaWeight;
-
-      result = (delta)*nbSeedsWeight;
-      return result;
-    }
-    else
-    {
-      delta += scoreDeltaOpponent - scoreDeltaCurrent * deltaWeight;
-
-      result = -(delta)*nbSeedsWeight;
-      return result;
-    }
-
-    // If nothing as changed
-    return nbSeedsWeight;
-  }
-}
-
-void Move::decisionAlphaBeta(Player *player, int depth)
-{
-  // Get starting time
-  auto startTime = high_resolution_clock::now();
-
-  // Decide the best move to play for J in the position currentPos
-  int val, alpha = -numeric_limits<int>::max();
-  int beta = numeric_limits<int>::max();
-  vector<Move> possibleMoves = this->getPossibleMoves(player);
-
-  for (Move move : possibleMoves)
-  {
-    val = this->alphaBetaValue(player, alpha, beta, false, depth);
-    if (val > alpha)
-    {
-      this->hole = move.getHole();
-      this->color = move.getColor();
-      this->isTransparent = move.getIsTransparent();
-
-      alpha = val;
-    }
-  }
-
-  // Get ending time
-  auto endTime = high_resolution_clock::now();
-
-  auto duration = duration_cast<milliseconds>(endTime - startTime);
-
-  cout << "AlphaBeta execution time : " << duration.count() << "ms";
-  cout << " | Depth : " << depth;
-  cout << " | Player : " << player->getName();
-  cout << " | Eval : " << alpha << endl;
-
-  cout << player->getName() << " Best next move : " << this->getNextMove() << endl;
-}
-
-int Move::alphaBetaValue(Player *player, int alpha, int beta, bool isMax, int depth)
-{
-  // Compute the value currentPos for the player J depending on currentPos.depth is the maximal depth
-  // if (isWinningPosition(currentPos, player))
-  // {
-  //   return this->maxValue;
-  // }
-  // if (isLoosingPosition(currentPos, player))
-  // {
-  //   return (-this->maxValue);
-  // }
-  // if (isDrawPosition(currentPos, player))
-  // {
-  //   return 0;
-  // }
-  if (depth == 0)
-  {
-    int eval = this->evaluate(player);
-    // cout << player->getName() << " evaluate() : " << eval << endl;
-    return eval;
-  }
-
-  vector<Move> possibleMoves = this->getPossibleMoves(player);
-
-  // Max
-  if (isMax)
-  {
-    for (Move childMove : possibleMoves)
-    {
-      alpha = max(alpha, childMove.alphaBetaValue(this->awele->getOpponent(player), alpha, beta, !isMax, depth - 1));
-      if (alpha >= beta)
-      {
-        return alpha; /* beta cut */
-      }
-    }
-    return alpha;
-  }
-
-  // Min
-  for (Move childMove : possibleMoves)
-  {
-    beta = min(beta, childMove.alphaBetaValue(this->awele->getOpponent(player), alpha, beta, !isMax, depth - 1));
-    if (beta <= alpha)
-    {
-      return beta; /* alpha cut */
-    }
-  }
-  return beta;
+  return move.getString();
 }

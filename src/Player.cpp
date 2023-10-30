@@ -68,6 +68,15 @@ int Player::getNbMoves()
   return this->nbMoves;
 }
 
+void Player::setNextMove(vector<Move> moves)
+{
+  this->moves = moves;
+}
+vector<Move> Player::getNextMove()
+{
+  return this->moves;
+}
+
 void Player::setChosen(bool chosen)
 {
   this->chosen = chosen;

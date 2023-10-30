@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "Color.h"
+#include "Move.h"
 
 using namespace std;
 
@@ -16,11 +16,10 @@ namespace Game
     string name;
     int score;
     int nbMoves;
+    Move nextMove;
 
     int chosen;
-
     int lastHoleIndex;
-
     vector<int> allowedHoles;
 
   public:
@@ -38,6 +37,9 @@ namespace Game
 
     void setNbMoves(int nbMoves);
     int getNbMoves();
+
+    void setNextMove(Move nextMove);
+    Move getNextMove();
 
     void setChosen(bool chosen);
     bool getChosen();
