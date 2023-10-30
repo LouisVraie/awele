@@ -81,7 +81,7 @@ namespace Game
 
     Move getRandomMove(Player *player);
 
-    int evaluate(Player *player);
+    int evaluate(Awele *awele);
     void decisionAlphaBeta(Player *player, int pmax);
     tuple<int, Move> alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int pmax);
   };

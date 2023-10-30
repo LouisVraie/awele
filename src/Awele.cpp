@@ -211,8 +211,9 @@ void Awele::play()
  */
 void Awele::show()
 {
+  ConsoleColor consoleColor;
   cout << endl;
-  cout << "[TURN " << this->turn << "]" << endl;
+  cout << consoleColor.green << "[TURN " << this->turn << "]" << consoleColor.base << endl;
   this->player1->show();
   this->player2->show();
   cout << "Seeds left : " << this->getSeedsLeft() << endl;
@@ -376,7 +377,7 @@ int Awele::getHolesPartWithSeeds()
  */
 int Awele::getDynamicDepth(Player *player)
 {
-  if (this->turn <= 3)
+  if (this->turn <= 4)
   {
     return 1;
   }
@@ -386,7 +387,7 @@ int Awele::getDynamicDepth(Player *player)
 
   // Get the number of seeds left
   int seedsLeft = this->getSeedsLeft();
-
+  return 4;
   if (holesPartWithSeeds >= 30)
   {
     return 4;
@@ -402,7 +403,7 @@ int Awele::getDynamicDepth(Player *player)
     return 6;
   }
 
-  return 8;
+  return 7;
 }
 
 /**
@@ -514,7 +515,7 @@ void Awele::askMove(Player *player)
   Color chosenColor = Color::Default;
   bool chosenIsTransparent;
   int chosenHole;
-
+  int errorCounter = 0;
   bool endAskCondition = true;
 
   do
@@ -570,6 +571,11 @@ void Awele::askMove(Player *player)
           if (rule->getDebug())
           {
             cout << player->getName() << " Invalid move. Please enter a valid move." << endl;
+          }
+          errorCounter++;
+          if (errorCounter > 100)
+          {
+            exit(1);
           }
         }
       }
@@ -794,7 +800,7 @@ Move Awele::getRandomMove(Player *player)
  * @brief Evaluate a move position
  * @return An integer which symbolize the move result
  */
-int Awele::evaluate(Player *player)
+int Awele::evaluate(Awele *awele)
 {
   int colorWeight = 0;
   // if it is the first turn
@@ -806,19 +812,9 @@ int Awele::evaluate(Player *player)
   {
     // check how many points the move can give
 
-    Player *currentPlayer;
-    Player *opponentPlayer;
+    Player *currentPlayer = awele->getCurrentPlayer();
+    Player *opponentPlayer = awele->getOpponent(currentPlayer);
 
-    if (player->getName() == this->getPlayer1()->getName())
-    {
-      currentPlayer = this->getPlayer1();
-    }
-    else
-    {
-      currentPlayer = this->getPlayer2();
-    }
-
-    opponentPlayer = this->getOpponent(currentPlayer);
     int currentPlayerNewScore = currentPlayer->getScore();
     int opponentPlayerNewScore = opponentPlayer->getScore();
 
@@ -920,6 +916,7 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
   int beta = numeric_limits<int>::max();
   vector<Move> possibleMoves = this->getPossibleMoves(player);
 
+  // Move::showMoves(possibleMoves);
   for (Move move : possibleMoves)
   {
     val = get<0>(this->alphaBetaValue(this, alpha, beta, false, depth));
@@ -932,11 +929,16 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
     }
   }
 
+  if (alpha == -numeric_limits<int>::max())
+  {
+    player->setNextMove(possibleMoves[0]); // TODO : Find a better solution if no move is worth it
+  }
+
   // Get ending time
   auto endTime = high_resolution_clock::now();
 
   auto duration = duration_cast<milliseconds>(endTime - startTime);
-
+  cout << endl;
   cout << "AlphaBeta execution time : " << duration.count() << "ms";
   cout << " | Depth : " << depth;
   cout << " | Player : " << player->getName();
@@ -964,7 +966,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
   // }
   if (depth == 0)
   {
-    int eval = this->evaluate(player);
+    int eval = this->evaluate(awele);
     // cout << player->getName() << " evaluate() : " << eval << endl;
     return make_tuple(eval, Move(16, Color::Blue, false));
   }
@@ -982,6 +984,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
       aweleCopy->nextPlayer();
 
       alpha = max(alpha, get<0>(this->alphaBetaValue(aweleCopy, alpha, beta, !isMax, depth - 1)));
+      // cout << alpha << " ";
       if (alpha >= beta)
       {
         return make_tuple(alpha, childMove); /* beta cut */
@@ -1000,6 +1003,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
     aweleCopy->nextPlayer();
 
     beta = min(beta, get<0>(this->alphaBetaValue(aweleCopy, alpha, beta, !isMax, depth - 1)));
+    // cout << beta << " ";
     if (beta <= alpha)
     {
       return make_tuple(beta, childMove); /* alpha cut */

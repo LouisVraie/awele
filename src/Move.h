@@ -25,7 +25,7 @@ namespace Game
     ~Move();
 
     void showMove();
-    void showMoves(vector<Move> moves);
+    static void showMoves(vector<Move> moves);
 
     void setHole(int hole);
     int getHole();
