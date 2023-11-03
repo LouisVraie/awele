@@ -2,6 +2,7 @@
 #define AWELE_H
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <tuple>
 #include <string>
@@ -9,6 +10,7 @@
 #include <algorithm>
 #include <limits>
 #include <chrono>
+#include <cmath>
 #include "Player.h"
 #include "Hole.h"
 #include "Rule.h"
@@ -40,6 +42,7 @@ namespace Game
     int turn;
 
     bool isCopied;
+    const int maxValue = numeric_limits<int>::max();
 
   public:
     Awele(Rule *rule);
@@ -80,6 +83,10 @@ namespace Game
     GameStatus checkGameStatus();
 
     Move getRandomMove(Player *player);
+
+    bool isWinningMove();
+    bool isLoosingMove();
+    bool isDrawMove();
 
     int evaluate(Awele *awele);
     void decisionAlphaBeta(Player *player, int pmax);

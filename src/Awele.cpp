@@ -192,7 +192,7 @@ void Awele::play()
   {
     // Get corresponding depth
     int depth = this->getDynamicDepth(currentPlayer);
-
+    cout << "Depth : " << depth << endl;
     // Ask the player to play
     this->decisionAlphaBeta(currentPlayer, depth);
   }
@@ -382,23 +382,39 @@ int Awele::getDynamicDepth(Player *player)
     return 1;
   }
 
+  // Create and open a text file
+  // ofstream file;
+  // file.open("./data.csv", ios::app);
+
   // Get the number of part of holes with seeds
   int holesPartWithSeeds = this->getHolesPartWithSeeds();
 
   // Get the number of seeds left
   int seedsLeft = this->getSeedsLeft();
-  return 4;
-  if (holesPartWithSeeds >= 30)
+
+  double ratio = ((double)holesPartWithSeeds / (double)seedsLeft) * 100;
+  cout << "Ratio : " << ratio << endl;
+
+  // // Write to the file
+  // file << holesPartWithSeeds << ";" << seedsLeft << ";" << ratio << endl;
+
+  // // Close the file
+  // file.close();
+  
+  // double expRatio = exp(-1.5 * ratio);
+  // return 10 * exp(-1.5 * ratio);
+    
+  if (ratio >= 30)
   {
     return 4;
   }
 
-  if (holesPartWithSeeds >= 20)
+  if (ratio >= 20)
   {
     return 5;
   }
 
-  if (holesPartWithSeeds >= 10)
+  if (ratio >= 10)
   {
     return 6;
   }
@@ -536,10 +552,8 @@ void Awele::askMove(Player *player)
     else
     {
       input = this->getRandomMove(player).getString();
+      // getline(cin, input);
     }
-    cout << input << endl;
-
-    // getline(cin, input);
 
     try
     {
@@ -590,6 +604,8 @@ void Awele::askMove(Player *player)
     }
 
   } while (endAskCondition);
+
+  cout << input << endl;
 
   // Increment the number of move of the current player
   player->setNbMoves(player->getNbMoves() + 1);
@@ -797,6 +813,57 @@ Move Awele::getRandomMove(Player *player)
 }
 
 /**
+ * @brief Check if it's a winning move for the chosen player
+ * @return A boolean
+ */
+bool Awele::isWinningMove()
+{
+  Player *player = this->getCurrentPlayer();
+
+  // if it's the chosen player and he will win
+  if (player->getChosen() && player->getScore() >= this->rule->getWinCondition())
+  {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * @brief Check if it's a loosing move for the chosen player
+ * @return A boolean
+ */
+bool Awele::isLoosingMove()
+{
+  Player *player = this->getCurrentPlayer();
+
+  // if it's the chosen player and the opponent win
+  if (player->getChosen() && this->getOpponent(player)->getScore() >= this->rule->getWinCondition())
+  {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * @brief Check if it's a draw move for the chosen player
+ * @return A boolean
+ */
+bool Awele::isDrawMove()
+{
+  Player *player = this->getCurrentPlayer();
+
+  // if it's the chosen player and the opponent win
+  if (player->getScore() == this->rule->getDrawCondition() && this->getOpponent(player)->getScore() == this->rule->getDrawCondition())
+  {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * @brief Evaluate a move position
  * @return An integer which symbolize the move result
  */
@@ -819,25 +886,6 @@ int Awele::evaluate(Awele *awele)
     int opponentPlayerNewScore = opponentPlayer->getScore();
 
     return currentPlayerNewScore - opponentPlayerNewScore;
-    // Make a copy of move to perform the move without affecting the real board
-    // Move *move = new Move(*this);
-    // Player *currentPlayer;
-    // Player *opponentPlayer;
-
-    // if (player->getName() == this->getPlayer1()->getName())
-    // {
-    //   currentPlayer = awele->getPlayer1();
-    // }
-    // else
-    // {
-    //   currentPlayer = awele->getPlayer2();
-    // }
-
-    // opponentPlayer = awele->getOpponent(currentPlayer);
-
-    // // Get the old score of both players
-    // int currentPlayerOldScore = currentPlayer->getScore();
-    // int opponentPlayerOldScore = opponentPlayer->getScore();
 
     // // Give the color weight
     // Color currentColor = move->getColor();
@@ -868,16 +916,6 @@ int Awele::evaluate(Awele *awele)
     // int nbSeeds = move->awele->getHoles()[move->getHole()]->getNbSeeds();
 
     // int nbSeedsWeight = nbSeeds * colorWeight;
-
-    // // Perform the move
-    // move->makeMove(currentPlayer);
-    // // Do the scoring
-    // move->awele->scoreAfterMove(currentPlayer);
-
-    // int currentPlayerNewScore = currentPlayer->getScore();
-    // int opponentPlayerNewScore = opponentPlayer->getScore();
-
-    // return currentPlayerNewScore - opponentPlayerNewScore;
 
     // int result = 0;
     // int scoreDeltaCurrent = currentPlayerNewScore - currentPlayerOldScore;
@@ -912,8 +950,8 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
   auto startTime = high_resolution_clock::now();
 
   // Decide the best move to play for J in the position currentPos
-  int val, alpha = -numeric_limits<int>::max();
-  int beta = numeric_limits<int>::max();
+  int val, alpha = -this->maxValue;
+  int beta = this->maxValue;
   vector<Move> possibleMoves = this->getPossibleMoves(player);
 
   // Move::showMoves(possibleMoves);
@@ -929,10 +967,15 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
     }
   }
 
-  if (alpha == -numeric_limits<int>::max())
+  if (alpha == -this->maxValue)
   {
     player->setNextMove(possibleMoves[0]); // TODO : Find a better solution if no move is worth it
   }
+
+  // Create and open a text file
+  ofstream file;
+  string sep = ";";
+  file.open("./data.csv", ios::app);
 
   // Get ending time
   auto endTime = high_resolution_clock::now();
@@ -945,40 +988,51 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
   cout << " | Eval : " << alpha << endl;
 
   cout << player->getName() << " Best next move : " << player->getNextMove().getString() << endl;
+
+  file << this->turn << sep << duration.count() << sep << depth << sep << alpha << endl;
+
+  file.close();
 }
 
 tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int depth)
 {
+  Awele *aweleCopy;
   Move lastMove;
   Player *player = awele->getCurrentPlayer();
-  // Compute the value currentPos for the player J depending on currentPos.depth is the maximal depth
-  // if (isWinningPosition(currentPos, player))
-  // {
-  //   return this->maxValue;
-  // }
-  // if (isLoosingPosition(currentPos, player))
-  // {
-  //   return (-this->maxValue);
-  // }
-  // if (isDrawPosition(currentPos, player))
-  // {
-  //   return 0;
-  // }
-  if (depth == 0)
+  Move unusedMove = Move(16, Color::Blue, false);
+
+  // Check if it is an end position
+  if (awele->isWinningMove())
   {
-    int eval = this->evaluate(awele);
-    // cout << player->getName() << " evaluate() : " << eval << endl;
-    return make_tuple(eval, Move(16, Color::Blue, false));
+    return make_tuple(this->maxValue, unusedMove);
+  }
+  if (awele->isLoosingMove())
+  {
+    return make_tuple(-this->maxValue, unusedMove);
+  }
+  if (awele->isDrawMove())
+  {
+    return make_tuple(0, unusedMove);
   }
 
-  vector<Move> possibleMoves = this->getPossibleMoves(player);
+  // If we reach the final depth
+  if (depth == 0)
+  {
+    // We compute the evalution score for this state
+    int eval = this->evaluate(awele);
+    // cout << player->getName() << " evaluate() : " << eval << endl;
+    return make_tuple(eval, unusedMove);
+  }
+
+  // Get all possible moves for the given player on the current board state
+  vector<Move> possibleMoves = awele->getPossibleMoves(player);
 
   // Max
   if (isMax)
   {
     for (Move childMove : possibleMoves)
     {
-      Awele *aweleCopy = new Awele(*(awele));
+      aweleCopy = new Awele(*(awele));
       aweleCopy->getCurrentPlayer()->setNextMove(childMove);
       aweleCopy->performMove();
       aweleCopy->nextPlayer();
@@ -997,7 +1051,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
   // Min
   for (Move childMove : possibleMoves)
   {
-    Awele *aweleCopy = new Awele(*(awele));
+    aweleCopy = new Awele(*(awele));
     aweleCopy->getCurrentPlayer()->setNextMove(childMove);
     aweleCopy->performMove();
     aweleCopy->nextPlayer();

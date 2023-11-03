@@ -23,7 +23,7 @@ int main()
 
   rule.setStarving(true);
 
-  rule.setDebug(true);
+  rule.setDebug(false);
 
   rule.setEatWhenNbSeeds({2, 3});
 
