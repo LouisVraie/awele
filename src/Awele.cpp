@@ -381,6 +381,7 @@ int Awele::getDynamicDepth(Player *player)
   {
     return 1;
   }
+    return 1;
 
   // Create and open a text file
   // ofstream file;
@@ -404,12 +405,12 @@ int Awele::getDynamicDepth(Player *player)
   // double expRatio = exp(-1.5 * ratio);
   // return 10 * exp(-1.5 * ratio);
     
-  if (ratio >= 30)
+  if (ratio >= 20)
   {
     return 4;
   }
 
-  if (ratio >= 20)
+  if (ratio >= 15)
   {
     return 5;
   }
@@ -551,8 +552,10 @@ void Awele::askMove(Player *player)
     }
     else
     {
-      input = this->getRandomMove(player).getString();
-      // getline(cin, input);
+      // input = player->getNextMove().getString();
+
+      // input = this->getRandomMove(player).getString();
+      getline(cin, input);
     }
 
     try
@@ -864,6 +867,20 @@ bool Awele::isDrawMove()
 }
 
 /**
+ * @brief Make a copy from the given awele and perform the move
+ * @return A copied Awele pointer of the given awele
+ */
+Awele *Awele::copyAndMove(Move childMove)
+{
+  Awele *aweleCopy = new Awele(*(this));
+  aweleCopy->getCurrentPlayer()->setNextMove(childMove);
+  aweleCopy->performMove();
+  aweleCopy->nextPlayer();
+
+  return aweleCopy;
+}
+
+/**
  * @brief Evaluate a move position
  * @return An integer which symbolize the move result
  */
@@ -948,60 +965,59 @@ int Awele::evaluate2(Awele *awele)
     Player *currentPlayer = awele->getCurrentPlayer();
     Player *opponentPlayer = awele->getOpponent(currentPlayer);
 
-    Move playerMove = opponentPlayer->getNextMove();
-
     int currentPlayerNewScore = currentPlayer->getScore();
     int opponentPlayerNewScore = opponentPlayer->getScore();
 
-    return currentPlayerNewScore - opponentPlayerNewScore;
+    int currentPlayerNbPlayableHoles = 0;
+    int opponentPlayerNbPlayableHoles = 0;
 
-    // Give the color weight
-    Color currentColor = currentPlayer->getNextMove().getColor();
-    bool currentIsTransparent = currentPlayer->getNextMove().getIsTransparent();
+    int currentPlayerHoleNbSeeds = 0;
+    int opponentPlayerHoleNbSeeds = 0;
 
-    // Blue
-    if (currentColor == Color::Blue && !currentIsTransparent)
-    {
-      colorWeight = 1;
-    }
-    // Red
-    else if (currentColor == Color::Red && !currentIsTransparent)
-    {
-      colorWeight = 5;
-    }
+    int currentPlayerTotalSeeds = 0;
+    int opponentPlayerTotalSeeds = 0;
 
-    // Transparent Blue
-    else if (currentColor == Color::Blue && currentIsTransparent)
+    int currentPlayerNbPossibleHoles = 0;
+    int opponentPlayerNbPossibleHoles = 0;
+
+    // foreach hole of the given player
+    for(int i : currentPlayer->getAllowedHoles())
     {
-      colorWeight = 2;
-    }
-    // Transparent Red
-    else if (currentColor == Color::Red && currentIsTransparent)
-    {
-      colorWeight = 4;
+      currentPlayerHoleNbSeeds = this->getHoles()[i]->getNbSeeds();
+      currentPlayerTotalSeeds += currentPlayerHoleNbSeeds;
+
+      // If they are seeds in this hole
+      if(currentPlayerHoleNbSeeds > 0)
+      {
+        // Adding 1 to the number of cases
+        currentPlayerNbPossibleHoles += 1;
+      }
     }
 
-    int nbSeeds = awele->getHoles()[playerMove.getHole()]->getNbSeeds();
+    // foreach hole of the given player
+    for(int i : opponentPlayer->getAllowedHoles())
+    {
+      opponentPlayerHoleNbSeeds = this->getHoles()[i]->getNbSeeds();
 
-    int nbSeedsWeight = nbSeeds * colorWeight;
-
-    int result = 0;
-    int deltaScore = 0;
-    int deltaWeight = 50;
-
-    deltaScore += (currentPlayerNewScore - opponentPlayerNewScore) * deltaWeight;
-
-    result = (deltaScore) + nbSeedsWeight;
-
-    // cout << result << " | ";
-    return result;
+      opponentPlayerTotalSeeds += opponentPlayerHoleNbSeeds;
+      
+      // If they are seeds in this hole
+      if(opponentPlayerHoleNbSeeds > 0)
+      {
+        // Adding 1 to the number of cases
+        opponentPlayerNbPossibleHoles += 1;
+      }
+    }
+    // TODO : verify the chosen player of not
+    return (((double)((currentPlayer->getScore() - opponentPlayer->getScore())*50)/100)
+    + ((double)((currentPlayerTotalSeeds - opponentPlayerTotalSeeds)*10)/100)
+    + ((double)((currentPlayerNbPossibleHoles-opponentPlayerNbPossibleHoles)*40)/100))
+    * 100;
   }
 }
 
 void Awele::decisionAlphaBeta(Player *player, int depth)
 {
-  Awele *aweleCopy;
-
   // Get starting time
   auto startTime = high_resolution_clock::now();
 
@@ -1013,14 +1029,9 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
   // Move::showMoves(possibleMoves);
   for (Move childMove : possibleMoves)
   {
-    aweleCopy = new Awele(*(this));
-    aweleCopy->getCurrentPlayer()->setNextMove(childMove);
-    aweleCopy->performMove();
-    aweleCopy->nextPlayer();
-
-    val = get<0>(this->alphaBetaValue(aweleCopy, alpha, beta, false, depth));
-    cout << val << " | ";
-    if (val >= alpha)
+    val = get<0>(this->alphaBetaValue(this->copyAndMove(childMove), alpha, beta, false, depth));
+    cout << childMove.getString() << " : " << val << " | ";
+    if (val > alpha)
     {
       // We set the next move if it's a good one
       player->setNextMove(childMove);
@@ -1030,15 +1041,15 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
   }
   cout << endl;
 
-  // if (alpha == -this->maxValue)
-  // {
-  //   player->setNextMove(possibleMoves[0]); // TODO : Find a better solution if no move is worth it
-  // }
+  if (alpha == -this->maxValue)
+  {
+    player->setNextMove(possibleMoves[0]); // TODO : Find a better solution if no move is worth it
+  }
 
   // Create and open a text file
-  ofstream file;
-  string sep = ";";
-  file.open("./data.csv", ios::app);
+  // ofstream file;
+  // string sep = ";";
+  // file.open("./data.csv", ios::app);
 
   // Get ending time
   auto endTime = high_resolution_clock::now();
@@ -1052,9 +1063,9 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
 
   cout << player->getName() << " Best next move : " << player->getNextMove().getString() << endl;
 
-  file << this->turn << sep << depth << sep << duration.count() << sep << alpha << endl;
+  // file << this->turn << sep << depth << sep << duration.count() << sep << alpha << endl;
 
-  file.close();
+  // file.close();
 }
 
 tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int depth)
@@ -1095,12 +1106,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
   {
     for (Move childMove : possibleMoves)
     {
-      aweleCopy = new Awele(*(awele));
-      aweleCopy->getCurrentPlayer()->setNextMove(childMove);
-      aweleCopy->performMove();
-      aweleCopy->nextPlayer();
-
-      alpha = max(alpha, get<0>(this->alphaBetaValue(aweleCopy, alpha, beta, !isMax, depth - 1)));
+      alpha = max(alpha, get<0>(this->alphaBetaValue(awele->copyAndMove(childMove), alpha, beta, !isMax, depth - 1)));
       // cout << alpha << " ";
       if (alpha >= beta)
       {
@@ -1114,12 +1120,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
   // Min
   for (Move childMove : possibleMoves)
   {
-    aweleCopy = new Awele(*(awele));
-    aweleCopy->getCurrentPlayer()->setNextMove(childMove);
-    aweleCopy->performMove();
-    aweleCopy->nextPlayer();
-
-    beta = min(beta, get<0>(this->alphaBetaValue(aweleCopy, alpha, beta, !isMax, depth - 1)));
+    beta = min(beta, get<0>(this->alphaBetaValue(awele->copyAndMove(childMove), alpha, beta, !isMax, depth - 1)));
     // cout << beta << " ";
     if (beta <= alpha)
     {

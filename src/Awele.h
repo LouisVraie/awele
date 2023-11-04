@@ -88,6 +88,7 @@ namespace Game
     bool isLoosingMove();
     bool isDrawMove();
 
+    Awele *copyAndMove(Move childMove);
     int evaluate(Awele *awele);
     int evaluate2(Awele *awele);
     void decisionAlphaBeta(Player *player, int pmax);
