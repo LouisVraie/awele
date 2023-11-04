@@ -89,6 +89,7 @@ namespace Game
     bool isDrawMove();
 
     int evaluate(Awele *awele);
+    int evaluate2(Awele *awele);
     void decisionAlphaBeta(Player *player, int pmax);
     tuple<int, Move> alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int pmax);
   };
