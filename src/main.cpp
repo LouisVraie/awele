@@ -5,41 +5,55 @@ using namespace std;
 
 int main()
 {
-  cout << "Awele Start" << endl;
-
-  srand(time(NULL));
-  Rule rule;
-  GameStatus gameStatus;
-
-  rule.setNbHoles(16);
-
-  rule.setNbBlueSeeds(2);
-  rule.setNbRedSeeds(2);
-  rule.setNbTransparentSeeds(1);
-
-  rule.setWinCondition(41);
-  rule.setDrawCondition(40);
-  rule.setEndCondition(10);
-
-  rule.setStarving(true);
-
-  rule.setDebug(false);
-
-  rule.setEatWhenNbSeeds({2, 3});
-
-  Awele awele = Awele(&rule);
-
-  do
+  try
   {
-    awele.play();
-    gameStatus = awele.checkGameStatus();
-  } while (gameStatus == GameStatus::InProgress);
 
-  cout << "<> Game finished !!!" << endl;
-  cout << "<> GameStatus : " << gameStatus << endl;
-  cout << "<> Seeds on board : " << awele.getSeedsLeft() << endl;
-  awele.show();
-  cout << "Awele End" << endl;
+    cout << "Awele Start" << endl;
 
-  return 0;
+    srand(time(NULL));
+    Rule rule;
+    GameStatus gameStatus;
+
+    rule.setNbHoles(16);
+
+    rule.setNbBlueSeeds(2);
+    rule.setNbRedSeeds(2);
+    rule.setNbTransparentSeeds(1);
+
+    rule.setWinCondition(41);
+    rule.setDrawCondition(40);
+    rule.setEndCondition(10);
+
+    rule.setStarving(true);
+
+    rule.setDebug(false);
+
+    rule.setEatWhenNbSeeds({2, 3});
+
+    Awele awele = Awele(&rule);
+
+    do
+    {
+      awele.play();
+      gameStatus = awele.checkGameStatus();
+      // if (awele.getTurn() >= 500)
+      // {
+      //   cout << "-------------------STOP-------------------" << endl;
+      //   break;
+      // }
+    } while (gameStatus == GameStatus::InProgress);
+
+    cout << "<> Game finished !!!" << endl;
+    cout << "<> GameStatus : " << gameStatus << endl;
+    cout << "<> Seeds on board : " << awele.getSeedsLeft() << endl;
+    awele.show();
+    cout << "Awele End" << endl;
+
+    return 0;
+  }
+  catch (exception e)
+  {
+    cerr << e.what() << endl;
+    return -1;
+  }
 }

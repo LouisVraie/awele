@@ -91,8 +91,10 @@ namespace Game
     Awele *copyAndMove(Move childMove);
     int evaluate(Awele *awele);
     int evaluate2(Awele *awele);
-    void decisionAlphaBeta(Player *player, int pmax);
-    tuple<int, Move> alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int pmax);
+    void decisionAlphaBeta(Player *player, int depth);
+    void decisionMinimax(Player *player, int depth);
+    tuple<int, Move> alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int depth);
+    tuple<int, Move> minimaxValue(Awele *awele, bool isMax, int depth);
   };
 }
 
