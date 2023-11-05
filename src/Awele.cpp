@@ -187,16 +187,19 @@ void Awele::play()
   // Show the board
   this->show();
 
+// Get corresponding depth
+  int depth = this->getDynamicDepth(currentPlayer);
+  cout << "Depth : " << depth << endl;
+
   // If the currentPlayer is the chosen one
   if (currentPlayer->getChosen())
   {
-    // Get corresponding depth
-    int depth = this->getDynamicDepth(currentPlayer);
-    cout << "Depth : " << depth << endl;
     // Ask the player to play
     this->decisionAlphaBeta(currentPlayer, depth);
     // this->decisionMinimax(currentPlayer, depth);
     // this->decisionChess(currentPlayer, depth);
+  } else {
+    //this->decisionChess(currentPlayer, depth);
   }
 
   this->askMove(currentPlayer);
@@ -995,11 +998,14 @@ int Awele::evaluate2(Awele *awele, int initialDepth)
     int newCurrentPlayerNbPossibleHoles = 0;
     int newOpponentPlayerNbPossibleHoles = 0;
 
+    int opponentNbNextMoves = awele->getPossibleMoves(newOpponentPlayer).size();
+
     // The sum of the 3 following variables must be equal to 100
     int scoreWeight = 50;
-    int deltaScoreWeight = 20;
-    int nbPossibleHolesWeight = 20;
-    int totalSeedsWeight = 10;
+    int deltaScoreWeight = 5;
+    int nbPossibleHolesWeight = 5;
+    int totalSeedsWeight = 5;
+    int nbNextMovesWeight = 45;
 
     // foreach hole of the given player
     for (int i : newCurrentPlayer->getAllowedHoles())
@@ -1034,7 +1040,9 @@ int Awele::evaluate2(Awele *awele, int initialDepth)
     return (((double)(((newCurrentPlayer->getScore()) - (newOpponentPlayer->getScore())) * scoreWeight) / 100) 
     + ((double)(((newCurrentPlayer->getScore() - oldCurrentPlayer->getScore()) - (newOpponentPlayer->getScore() - oldOpponentPlayer->getScore())) * deltaScoreWeight) / 100) 
     + ((double)((newCurrentPlayerNbPossibleHoles - newOpponentPlayerNbPossibleHoles) * nbPossibleHolesWeight) / 100)
-    + ((double)((newCurrentPlayerTotalSeeds - newOpponentPlayerTotalSeeds) * totalSeedsWeight) / 100)) * 100;
+    + ((double)((newCurrentPlayerTotalSeeds - newOpponentPlayerTotalSeeds) * totalSeedsWeight) / 100)
+    + ((double)((32 - opponentNbNextMoves) * nbNextMovesWeight) / 100)
+    ) * 100;
 
     // if (newCurrentPlayer->getChosen())
     // {
@@ -1402,6 +1410,7 @@ tuple<int, Move> Awele::chessValue(Awele *awele, int depth, int initialDepth)
   vector<Move> possibleMoves = this->getPossibleMoves(awele->getCurrentPlayer());
 
   score = -this->maxValue;
+  lastMove = possibleMoves[0];
   for (Move childMove : possibleMoves)
   {
     tempScore = -get<0>(this->chessValue(awele->copyAndMove(childMove), depth - 1, initialDepth));
@@ -1411,6 +1420,7 @@ tuple<int, Move> Awele::chessValue(Awele *awele, int depth, int initialDepth)
       lastMove = childMove;
     }
   }
+
   delete awele;
   return make_tuple(score, lastMove);
 }

@@ -45,6 +45,15 @@ void Player::show()
   cout << endl;
 }
 
+void Player::setId(int id)
+{
+  this->id = id;
+}
+int Player::getId()
+{
+  return this->id;
+}
+
 void Player::setName(string name)
 {
   this->name = name;
