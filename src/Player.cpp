@@ -10,7 +10,6 @@ Player::Player(int id, string name)
   this->id = id;
   this->name = name;
   this->score = 0;
-  this->nbMoves = 0;
 }
 
 /**
@@ -21,13 +20,19 @@ Player::Player(const Player &player)
   this->id = player.id;
   this->name = player.name;
   this->score = player.score;
-  this->nbMoves = player.nbMoves;
 
   this->chosen = player.chosen;
 
   this->lastHoleIndex = player.lastHoleIndex;
 
   this->allowedHoles = player.allowedHoles;
+}
+
+/**
+ * @brief Destructor
+ */
+Player::~Player()
+{
 }
 
 /**
@@ -60,15 +65,6 @@ int Player::getScore()
 void Player::addScore(int score)
 {
   this->score += score;
-}
-
-void Player::setNbMoves(int nbMoves)
-{
-  this->nbMoves = nbMoves;
-}
-int Player::getNbMoves()
-{
-  return this->nbMoves;
 }
 
 void Player::setNextMove(Move nextMove)

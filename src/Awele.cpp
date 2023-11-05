@@ -190,12 +190,12 @@ void Awele::play()
   // If the currentPlayer is the chosen one
   if (currentPlayer->getChosen())
   {
-    // Get corresponding depth
-    int depth = this->getDynamicDepth(currentPlayer);
-    cout << "Depth : " << depth << endl;
-    // Ask the player to play
-    this->decisionAlphaBeta(currentPlayer, depth);
-    // this->decisionMinimax(currentPlayer, depth);
+  // Get corresponding depth
+  int depth = this->getDynamicDepth(currentPlayer);
+  cout << "Depth : " << depth << endl;
+  // Ask the player to play
+  this->decisionAlphaBeta(currentPlayer, depth);
+  // this->decisionMinimax(currentPlayer, depth-1);
   }
 
   this->askMove(currentPlayer);
@@ -610,9 +610,6 @@ void Awele::askMove(Player *player)
 
   cout << input << endl;
 
-  // Increment the number of move of the current player
-  player->setNbMoves(player->getNbMoves() + 1);
-
   // Set the chosen move infos for the player
   player->setNextMove(Move(chosenHole, chosenColor, chosenIsTransparent));
 }
@@ -980,6 +977,11 @@ int Awele::evaluate2(Awele *awele)
     int currentPlayerNbPossibleHoles = 0;
     int opponentPlayerNbPossibleHoles = 0;
 
+    // The sum of the 3 following variables must be equal to 100
+    int scoreWeight = 60;
+    int totalSeedsWeight = 10;
+    int nbPossibleHolesWeight = 30;
+
     // foreach hole of the given player
     for (int i : currentPlayer->getAllowedHoles())
     {
@@ -1009,13 +1011,13 @@ int Awele::evaluate2(Awele *awele)
       }
     }
     // TODO : verify the chosen player of not
-    return (((double)((currentPlayer->getScore() - opponentPlayer->getScore()) * 50) / 100) + ((double)((currentPlayerTotalSeeds - opponentPlayerTotalSeeds) * 10) / 100) + ((double)((currentPlayerNbPossibleHoles - opponentPlayerNbPossibleHoles) * 40) / 100)) * 100;
+    return (((double)((currentPlayer->getScore() - opponentPlayer->getScore()) * scoreWeight) / 100) + ((double)((currentPlayerTotalSeeds - opponentPlayerTotalSeeds) * totalSeedsWeight) / 100) + ((double)((currentPlayerNbPossibleHoles - opponentPlayerNbPossibleHoles) * nbPossibleHolesWeight) / 100)) * 100;
   }
 }
 
 /**
  * @brief Obtain the best next move for the given player
-*/
+ */
 void Awele::decisionAlphaBeta(Player *player, int depth)
 {
   // Get starting time
@@ -1069,7 +1071,7 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
 
 /**
  * @brief Obtain the best next move for the given player
-*/
+ */
 void Awele::decisionMinimax(Player *player, int depth)
 {
   // Get starting time
@@ -1123,22 +1125,23 @@ void Awele::decisionMinimax(Player *player, int depth)
 
 tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int depth)
 {
-  Awele *aweleCopy;
   Move lastMove;
-  Player *player = awele->getCurrentPlayer();
   Move unusedMove = Move(16, Color::Blue, false);
 
   // Check if it is an end position
   if (awele->isWinningMove())
   {
+    delete awele;
     return make_tuple(this->maxValue, unusedMove);
   }
   if (awele->isLoosingMove())
   {
+    delete awele;
     return make_tuple(-this->maxValue, unusedMove);
   }
   if (awele->isDrawMove())
   {
+    delete awele;
     return make_tuple(0, unusedMove);
   }
 
@@ -1147,12 +1150,13 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
   {
     // We compute the evalution score for this state
     int eval = this->evaluate2(awele);
+    delete awele;
     // cout << player->getName() << " evaluate() : " << eval << endl;
     return make_tuple(eval, unusedMove);
   }
 
   // Get all possible moves for the given player on the current board state
-  vector<Move> possibleMoves = awele->getPossibleMoves(player);
+  vector<Move> possibleMoves = this->getPossibleMoves(awele->getCurrentPlayer());
 
   // Max
   if (isMax)
@@ -1163,10 +1167,12 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
       // cout << alpha << " ";
       if (alpha >= beta)
       {
+        delete awele;
         return make_tuple(alpha, childMove); /* beta cut */
       }
       lastMove = childMove;
     }
+    delete awele;
     return make_tuple(alpha, lastMove);
   }
 
@@ -1177,10 +1183,12 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
     // cout << beta << " ";
     if (beta <= alpha)
     {
+      delete awele;
       return make_tuple(beta, childMove); /* alpha cut */
     }
     lastMove = childMove;
   }
+  delete awele;
   return make_tuple(beta, lastMove);
 }
 
@@ -1190,24 +1198,25 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
  */
 tuple<int, Move> Awele::minimaxValue(Awele *awele, bool isMax, int depth)
 {
-  Awele *aweleCopy;
   int temp;
   int index = 0;
   tuple<int, Move> result;
-  Player *player = awele->getCurrentPlayer();
   Move unusedMove = Move(16, Color::Blue, false);
 
   // Check if it is an end position
   if (awele->isWinningMove())
   {
+    delete awele;
     return make_tuple(this->maxValue, unusedMove);
   }
   if (awele->isLoosingMove())
   {
+    delete awele;
     return make_tuple(-this->maxValue, unusedMove);
   }
   if (awele->isDrawMove())
   {
+    delete awele;
     return make_tuple(0, unusedMove);
   }
 
@@ -1217,11 +1226,12 @@ tuple<int, Move> Awele::minimaxValue(Awele *awele, bool isMax, int depth)
     // We compute the evalution score for this state
     int eval = this->evaluate2(awele);
     // cout << player->getName() << " evaluate() : " << eval << endl;
+    delete awele;
     return make_tuple(eval, unusedMove);
   }
 
   // Get all possible moves for the given player on the current board state
-  vector<Move> possibleMoves = awele->getPossibleMoves(player);
+  vector<Move> possibleMoves = awele->getPossibleMoves(awele->getCurrentPlayer());
 
   vector<tuple<int, Move>> evals;
 
@@ -1229,6 +1239,7 @@ tuple<int, Move> Awele::minimaxValue(Awele *awele, bool isMax, int depth)
   {
     evals.push_back(this->minimaxValue(awele->copyAndMove(childMove), !isMax, depth - 1));
   }
+  delete awele;
 
   // Max
   if (isMax)

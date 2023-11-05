@@ -17,7 +17,6 @@ namespace Game
     int id;
     string name;
     int score;
-    int nbMoves;
     Move nextMove;
 
     bool chosen;
@@ -27,6 +26,7 @@ namespace Game
   public:
     Player(int id, string name);
     Player(const Player &player);
+    ~Player();
 
     void show();
 
@@ -39,9 +39,6 @@ namespace Game
     void setScore(int score);
     int getScore();
     void addScore(int score);
-
-    void setNbMoves(int nbMoves);
-    int getNbMoves();
 
     void setNextMove(Move nextMove);
     Move getNextMove();
