@@ -60,6 +60,7 @@ namespace Game
 
     void play();
     void show();
+    static void showAlgoInfos(string function, int durationInMs, int depth, Player *player, int eval);
     void performMove();
     void scoreAfterMove(Player *player);
     void checkStarving(Player *player);
@@ -91,9 +92,7 @@ namespace Game
     Awele *copyAndMove(Move childMove);
     int evaluate(Awele *awele);
     int evaluate2(Awele *awele, int initialDepth);
-    void decisionAlphaBeta(Player *player, int depth);
-    void decisionMinimax(Player *player, int depth);
-    void decisionChess(Player *player, int depth);
+    void decisionAlgo(string algoName, Player *player, int depth);
     tuple<int, Move> alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int depth, int initialDepth);
     tuple<int, Move> minimaxValue(Awele *awele, bool isMax, int depth, int initialDepth);
     tuple<int, Move> chessValue(Awele *awele, int depth, int initialDepth);

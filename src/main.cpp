@@ -26,7 +26,7 @@ int main()
 
     rule.setStarving(true);
 
-    rule.setDebug(false);
+    rule.setDebug(true);
 
     rule.setEatWhenNbSeeds({2, 3});
 
@@ -36,16 +36,10 @@ int main()
     {
       awele.play();
       gameStatus = awele.checkGameStatus();
-      // if (awele.getTurn() >= 500)
-      // {
-      //   cout << "-------------------STOP-------------------" << endl;
-      //   break;
-      // }
     } while (gameStatus == GameStatus::InProgress);
 
-    cout << "<> Game finished !!!" << endl;
-    cout << "<> GameStatus : " << gameStatus << endl;
-    cout << "<> Seeds on board : " << awele.getSeedsLeft() << endl;
+    cout << "!!! Game finished !!!" << endl;
+    cout << "GameStatus : " << gameStatus << endl;
     awele.show();
     cout << "Awele End" << endl;
 

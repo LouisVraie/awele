@@ -187,19 +187,14 @@ void Awele::play()
   // Show the board
   this->show();
 
-// Get corresponding depth
+  // Get corresponding depth
   int depth = this->getDynamicDepth(currentPlayer);
-  cout << "Depth : " << depth << endl;
 
   // If the currentPlayer is the chosen one
   if (currentPlayer->getChosen())
   {
     // Ask the player to play
-    this->decisionAlphaBeta(currentPlayer, depth);
-    // this->decisionMinimax(currentPlayer, depth);
-    // this->decisionChess(currentPlayer, depth);
-  } else {
-    //this->decisionChess(currentPlayer, depth);
+    this->decisionAlgo("AlphaBeta", currentPlayer, depth);
   }
 
   this->askMove(currentPlayer);
@@ -235,6 +230,20 @@ void Awele::show()
     cout << " ";
   }
   cout << endl;
+}
+
+/**
+ * @brief Print the informations of the current function
+*/
+void Awele::showAlgoInfos(string function, int durationInMs, int depth, Player *player, int eval)
+{
+  cout << endl;
+  cout << function <<" execution time : " << durationInMs << "ms";
+  cout << " | Depth : " << depth;
+  cout << " | Player : " << player->getName();
+  cout << " | Eval : " << eval << endl;
+
+  cout << player->getName() << " Best next move : " << player->getNextMove().getString() << endl;
 }
 
 /**
@@ -382,14 +391,10 @@ int Awele::getHolesPartWithSeeds()
  */
 int Awele::getDynamicDepth(Player *player)
 {
-  if (this->turn <= 4)
+  if (this->turn <= 1)
   {
     return 1;
   }
-
-  // Create and open a text file
-  // ofstream file;
-  // file.open("./data.csv", ios::app);
 
   // Get the number of part of holes with seeds
   int holesPartWithSeeds = this->getHolesPartWithSeeds();
@@ -398,13 +403,6 @@ int Awele::getDynamicDepth(Player *player)
   int seedsLeft = this->getSeedsLeft();
 
   double ratio = ((double)holesPartWithSeeds / (double)seedsLeft) * 100;
-  cout << "Ratio : " << ratio << endl;
-
-  // // Write to the file
-  // file << holesPartWithSeeds << ";" << seedsLeft << ";" << ratio << endl;
-
-  // // Close the file
-  // file.close();
 
   // double expRatio = exp(-1.5 * ratio);
   // return 10 * exp(-1.5 * ratio);
@@ -424,12 +422,7 @@ int Awele::getDynamicDepth(Player *player)
     return 5;
   }
 
-  if (ratio >= 10)
-  {
-    return 6;
-  }
-
-  return 7;
+  return 6;
 }
 
 /**
@@ -562,7 +555,6 @@ void Awele::askMove(Player *player)
     else
     {
       // input = player->getNextMove().getString();
-
       // input = this->getRandomMove(player).getString();
       getline(cin, input);
     }
@@ -793,7 +785,6 @@ GameStatus Awele::checkGameStatus()
  */
 Move Awele::getRandomMove(Player *player)
 {
-
   // Get a random hole allowed for the player
   int holeIndex = rand() % (this->rule->getNbHoles() / 2);
   int hole = player->getAllowedHoles()[holeIndex];
@@ -830,12 +821,7 @@ bool Awele::isWinningMove()
   Player *player = this->getCurrentPlayer();
 
   // if it's the chosen player and he will win
-  if (player->getChosen() && player->getScore() >= this->rule->getWinCondition())
-  {
-    return true;
-  }
-
-  return false;
+  return player->getChosen() && player->getScore() >= this->rule->getWinCondition();
 }
 
 /**
@@ -847,12 +833,7 @@ bool Awele::isLoosingMove()
   Player *player = this->getCurrentPlayer();
 
   // if it's the chosen player and the opponent win
-  if (player->getChosen() && this->getOpponent(player)->getScore() >= this->rule->getWinCondition())
-  {
-    return true;
-  }
-
-  return false;
+  return player->getChosen() && this->getOpponent(player)->getScore() >= this->rule->getWinCondition();
 }
 
 /**
@@ -864,12 +845,7 @@ bool Awele::isDrawMove()
   Player *player = this->getCurrentPlayer();
 
   // if it's the chosen player and the opponent win
-  if (player->getScore() == this->rule->getDrawCondition() && this->getOpponent(player)->getScore() == this->rule->getDrawCondition())
-  {
-    return true;
-  }
-
-  return false;
+  return player->getScore() == this->rule->getDrawCondition() && this->getOpponent(player)->getScore() == this->rule->getDrawCondition();
 }
 
 /**
@@ -894,9 +870,9 @@ int Awele::evaluate(Awele *awele)
 {
   int colorWeight = 0;
   // if it is the first turn
-  if (this->getTurn() <= 4)
+  if (this->getTurn() <= 1)
   {
-    return rand() % numeric_limits<int>::max();
+    return rand() % this->maxValue;
   }
   else
   {
@@ -960,9 +936,9 @@ int Awele::evaluate2(Awele *awele, int initialDepth)
 {
   int colorWeight = 0;
   // if it is the first turn
-  if (this->getTurn() <= 4)
+  if (this->getTurn() <= 1)
   {
-    return rand() % numeric_limits<int>::max();
+    return rand() % this->maxValue;
   }
   else
   {
@@ -983,12 +959,6 @@ int Awele::evaluate2(Awele *awele, int initialDepth)
       newOpponentPlayer = awele->getOpponent(awele->getCurrentPlayer());
     }
 
-    int newCurrentPlayerNewScore = newCurrentPlayer->getScore();
-    int newOpponentPlayerNewScore = newOpponentPlayer->getScore();
-
-    int newCurrentPlayerNbPlayableHoles = 0;
-    int newOpponentPlayerNbPlayableHoles = 0;
-
     int newCurrentPlayerHoleNbSeeds = 0;
     int newOpponentPlayerHoleNbSeeds = 0;
 
@@ -1002,10 +972,10 @@ int Awele::evaluate2(Awele *awele, int initialDepth)
 
     // The sum of the 3 following variables must be equal to 100
     int scoreWeight = 50;
-    int deltaScoreWeight = 5;
-    int nbPossibleHolesWeight = 5;
-    int totalSeedsWeight = 5;
-    int nbNextMovesWeight = 45;
+    int deltaScoreWeight = 10;
+    int nbPossibleHolesWeight = 25;
+    int totalSeedsWeight = 10;
+    int nbNextMovesWeight = 5;
 
     // foreach hole of the given player
     for (int i : newCurrentPlayer->getAllowedHoles())
@@ -1036,30 +1006,19 @@ int Awele::evaluate2(Awele *awele, int initialDepth)
       }
     }
     
-    // TODO : verify the chosen player of not
     return (((double)(((newCurrentPlayer->getScore()) - (newOpponentPlayer->getScore())) * scoreWeight) / 100) 
     + ((double)(((newCurrentPlayer->getScore() - oldCurrentPlayer->getScore()) - (newOpponentPlayer->getScore() - oldOpponentPlayer->getScore())) * deltaScoreWeight) / 100) 
     + ((double)((newCurrentPlayerNbPossibleHoles - newOpponentPlayerNbPossibleHoles) * nbPossibleHolesWeight) / 100)
     + ((double)((newCurrentPlayerTotalSeeds - newOpponentPlayerTotalSeeds) * totalSeedsWeight) / 100)
     + ((double)((32 - opponentNbNextMoves) * nbNextMovesWeight) / 100)
-    ) * 100;
-
-    // if (newCurrentPlayer->getChosen())
-    // {
-    //   cout << "Chosen | ";
-    //   return (((double)((newCurrentPlayer->getScore() - newOpponentPlayer->getScore()) * scoreWeight) / 100) + ((double)((newCurrentPlayerTotalSeeds - newOpponentPlayerTotalSeeds) * totalSeedsWeight) / 100) + ((double)((newCurrentPlayerNbPossibleHoles - newOpponentPlayerNbPossibleHoles) * nbPossibleHolesWeight) / 100)) * 100;
-    // }
-    // else
-    // {
-    //   return (((double)((newOpponentPlayer->getScore() - newCurrentPlayer->getScore()) * scoreWeight) / 100) + ((double)((newOpponentPlayerTotalSeeds - newCurrentPlayerTotalSeeds) * totalSeedsWeight) / 100) + ((double)((newOpponentPlayerNbPossibleHoles - newCurrentPlayerNbPossibleHoles) * nbPossibleHolesWeight) / 100)) * 100;
-    // }
+    ) * 10000;
   }
 }
 
 /**
- * @brief Obtain the best next move for the given player
+ * @brief Obtain the best next move for the given player and the algorithm
  */
-void Awele::decisionAlphaBeta(Player *player, int depth)
+void Awele::decisionAlgo(string algoName, Player *player, int depth)
 {
   // Get starting time
   auto startTime = high_resolution_clock::now();
@@ -1071,8 +1030,28 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
   // Decide the best move to play for the player
   for (Move childMove : possibleMoves)
   {
-    val = get<0>(this->alphaBetaValue(this->copyAndMove(childMove), alpha, beta, depth % 2 == 1, depth, depth));
-    cout << childMove.getString() << " : " << val << " | ";
+    if (algoName == "AlphaBeta")
+    {
+      val = get<0>(this->alphaBetaValue(this->copyAndMove(childMove), alpha, beta, depth % 2 == 1, depth, depth));
+    } 
+    else if (algoName == "Minimax")
+    {
+      val = get<0>(this->minimaxValue(this->copyAndMove(childMove), depth % 2 == 1, depth, depth));
+    }
+    else if (algoName == "Chess")
+    {
+      val = get<0>(this->chessValue(this->copyAndMove(childMove), depth, depth));
+    }
+    else {
+      cerr << "Algorithm : '" << algoName << "' was not found !" << endl;
+      exit(1);
+    }
+
+    if(this->rule->getDebug())
+    {
+      cout << childMove.getString() << " : " << val << " | ";
+    }
+
     if (val > alpha)
     {
       // We set the next move if it's a good one
@@ -1085,137 +1064,14 @@ void Awele::decisionAlphaBeta(Player *player, int depth)
 
   if (alpha == -this->maxValue)
   {
-    player->setNextMove(possibleMoves[0]); // TODO : Find a better solution if no move is worth it
+    player->setNextMove(possibleMoves[0]);
   }
 
-  // Create and open a text file
-  // ofstream file;
-  // string sep = ";";
-  // file.open("./data.csv", ios::app);
+  // Get duration
+  auto duration = duration_cast<milliseconds>(high_resolution_clock::now() - startTime);
 
-  // Get ending time
-  auto endTime = high_resolution_clock::now();
-
-  auto duration = duration_cast<milliseconds>(endTime - startTime);
-  cout << endl;
-  cout << "AlphaBeta execution time : " << duration.count() << "ms";
-  cout << " | Depth : " << depth;
-  cout << " | Player : " << player->getName();
-  cout << " | Eval : " << alpha << endl;
-
-  cout << player->getName() << " Best next move : " << player->getNextMove().getString() << endl;
-
-  // file << this->turn << sep << depth << sep << duration.count() << sep << alpha << endl;
-
-  // file.close();
-}
-
-/**
- * @brief Obtain the best next move for the given player
- */
-void Awele::decisionMinimax(Player *player, int depth)
-{
-  // Get starting time
-  auto startTime = high_resolution_clock::now();
-
-  int val, alpha = -this->maxValue;
-  int beta = this->maxValue;
-  vector<Move> possibleMoves = this->getPossibleMoves(player);
-
-  // Decide the best move to play for the player
-  for (Move childMove : possibleMoves)
-  {
-    val = get<0>(this->minimaxValue(this->copyAndMove(childMove), depth % 2 == 1, depth, depth));
-    cout << childMove.getString() << " : " << val << " | ";
-    if (val > alpha)
-    {
-      // We set the next move if it's a good one
-      player->setNextMove(childMove);
-
-      alpha = val;
-    }
-  }
-  cout << endl;
-
-  if (alpha == -this->maxValue)
-  {
-    player->setNextMove(possibleMoves[0]); // TODO : Find a better solution if no move is worth it
-  }
-
-  // Create and open a text file
-  // ofstream file;
-  // string sep = ";";
-  // file.open("./data.csv", ios::app);
-
-  // Get ending time
-  auto endTime = high_resolution_clock::now();
-
-  auto duration = duration_cast<milliseconds>(endTime - startTime);
-  cout << endl;
-  cout << "Minimax execution time : " << duration.count() << "ms";
-  cout << " | Depth : " << depth;
-  cout << " | Player : " << player->getName();
-  cout << " | Eval : " << alpha << endl;
-
-  cout << player->getName() << " Best next move : " << player->getNextMove().getString() << endl;
-
-  // file << this->turn << sep << depth << sep << duration.count() << sep << alpha << endl;
-
-  // file.close();
-}
-
-/**
- * @brief Obtain the best next move for the given player
- */
-void Awele::decisionChess(Player *player, int depth)
-{
-  // Get starting time
-  auto startTime = high_resolution_clock::now();
-
-  int val, alpha = -this->maxValue;
-  int beta = this->maxValue;
-  vector<Move> possibleMoves = this->getPossibleMoves(player);
-
-  // Decide the best move to play for the player
-  for (Move childMove : possibleMoves)
-  {
-    val = get<0>(this->chessValue(this->copyAndMove(childMove), depth, depth));
-    cout << childMove.getString() << " : " << val << " | ";
-    if (val > alpha)
-    {
-      // We set the next move if it's a good one
-      player->setNextMove(childMove);
-
-      alpha = val;
-    }
-  }
-  cout << endl;
-
-  if (alpha == -this->maxValue)
-  {
-    player->setNextMove(possibleMoves[0]); // TODO : Find a better solution if no move is worth it
-  }
-
-  // Create and open a text file
-  // ofstream file;
-  // string sep = ";";
-  // file.open("./data.csv", ios::app);
-
-  // Get ending time
-  auto endTime = high_resolution_clock::now();
-
-  auto duration = duration_cast<milliseconds>(endTime - startTime);
-  cout << endl;
-  cout << "Chess execution time : " << duration.count() << "ms";
-  cout << " | Depth : " << depth;
-  cout << " | Player : " << player->getName();
-  cout << " | Eval : " << alpha << endl;
-
-  cout << player->getName() << " Best next move : " << player->getNextMove().getString() << endl;
-
-  // file << this->turn << sep << depth << sep << duration.count() << sep << alpha << endl;
-
-  // file.close();
+  // Print the data
+  this->showAlgoInfos(algoName, duration.count(), depth, player, alpha);
 }
 
 tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool isMax, int depth, int initialDepth)
@@ -1246,8 +1102,8 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
   {
     // We compute the evalution score for this state
     int eval = this->evaluate2(awele, initialDepth);
+
     delete awele;
-    // cout << player->getName() << " evaluate() : " << eval << endl;
     return make_tuple(eval, unusedMove);
   }
 
@@ -1261,7 +1117,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
     for (Move childMove : possibleMoves)
     {
       value = max(value, get<0>(this->alphaBetaValue(awele->copyAndMove(childMove), alpha, beta, !isMax, depth - 1, initialDepth)));
-      // cout << alpha << " ";
+
       if (value >= beta)
       {
         delete awele;
@@ -1279,8 +1135,7 @@ tuple<int, Move> Awele::alphaBetaValue(Awele *awele, int alpha, int beta, bool i
   for (Move childMove : possibleMoves)
   {
     value = min(value, get<0>(this->alphaBetaValue(awele->copyAndMove(childMove), alpha, beta, !isMax, depth - 1, initialDepth)));
-    // cout << "Inside Min : " << value << " | ";
-    // cout << beta << " ";
+    
     if (value <= alpha)
     {
       delete awele;
@@ -1326,7 +1181,7 @@ tuple<int, Move> Awele::minimaxValue(Awele *awele, bool isMax, int depth, int in
   {
     // We compute the evalution score for this state
     int eval = this->evaluate2(awele, initialDepth);
-    // cout << player->getName() << " evaluate() : " << eval << endl;
+
     delete awele;
     return make_tuple(eval, unusedMove);
   }
@@ -1401,8 +1256,8 @@ tuple<int, Move> Awele::chessValue(Awele *awele, int depth, int initialDepth)
   {
     // We compute the evalution score for this state
     int eval = this->evaluate2(awele, initialDepth);
+    
     delete awele;
-    // cout << player->getName() << " evaluate() : " << eval << endl;
     return make_tuple(eval, unusedMove);
   }
 
