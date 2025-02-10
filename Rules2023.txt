@@ -16,7 +16,7 @@ Players take turns moving the seeds. On a turn, a player chooses one of the heig
 Moves are made according to colors. First a color is designed and all the seeds of this color are played, 
 If the seeds are red, then they are distributed in each hole. If the seeds are blue, then they are distributed only in the opponent's holes. If transparent color is selected then the player has to decide if they are played like red or like blue
 
-Seeds are not distributed into the hole drawn from. The starting hole is always left empty for the selected color; if it contained 20 (or more) seeds, it is skipped, and the twentyth seed is placed in the next hole. 
+Seeds are not distributed into the hole drawn from. The starting hole is always left empty for the selected color; if a clock turn is made then the initial hole is skipped, and the seed is placed in the next hole. 
 Thus, a move is expressed by NC if Bor R seeds are played where N is the number of the hole, C is the color which is played
 For instance, 3R means that we play the red seeds of hole 3 (and only the red) 
 If a transparent color is played then the move is expressed by NTC. 4TR means that the transparent seeds are played as if they were red
@@ -75,5 +75,3 @@ Holes 1, 16, 15 are captured 2+3+2=7 seeds are captured
 The result is:
 1 () 2 (2B) 3(1B) 4(2B) 5(1R)
 16 () 15 () 14 (4B)
- 
-
